@@ -7,3 +7,4 @@ List<bool> flagG = [false,false];
 bool backflag = false;//バックグラウンド動作
 bool musicflag = false;//音楽再生
 bool moveflag = false;//バイブレーション
+bool callflag = false;

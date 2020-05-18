@@ -39,6 +39,12 @@ class HomeState extends State<Home> {
       title: Text("名前編集"),
       ),
 
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Action!',
+        child: Icon(Icons.tap_and_play), 
+        onPressed: () {globals.callflag = true;}
+      ),
+
       body: ListView.separated(
         itemCount: namedata.length,
         separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.black,),

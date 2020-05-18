@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
- 
 import 'routes/home_route.dart';
 import 'routes/option_route.dart';
 
@@ -10,7 +9,7 @@ class RootWidget extends StatefulWidget {
   @override
   _RootWidgetState createState() => _RootWidgetState();
 }
- 
+
 class _RootWidgetState extends State<RootWidget> {
   int _selectedIndex = 0;
   final _bottomNavigationBarItems = <BottomNavigationBarItem>[];
