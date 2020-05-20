@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'add_route.dart';
+import 'test_route.dart';
 import 'globals.dart' as globals;
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -23,8 +24,19 @@ class HomeState extends State<Home> {
 
     return Scaffold(
       appBar: AppBar(
-      actions: <Widget>[
-        IconButton(
+        actions: <Widget>[
+          IconButton(
+            padding: const EdgeInsets.all(8.0),
+            icon:Icon(Icons.edit),
+            onPressed:(){
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Test()
+                )
+              );
+            },
+          ),
+          IconButton(
             padding: const EdgeInsets.all(8.0),
             icon:Icon(Icons.add),
             onPressed:(){
@@ -34,15 +46,17 @@ class HomeState extends State<Home> {
                 )
               );
             },
-        ),
-      ],
-      title: Text("名前編集"),
+          ),
+        ],
+        title: Text("名前編集"),
       ),
 
       floatingActionButton: FloatingActionButton(
         tooltip: 'Action!',
         child: Icon(Icons.tap_and_play), 
-        onPressed: () {globals.callflag = true;}
+        onPressed: () {
+          //globals.recordflag = !globals.recordflag;
+          }
       ),
 
       body: ListView.separated(
