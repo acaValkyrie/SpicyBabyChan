@@ -55,7 +55,7 @@ class HomeState extends State<Home> {
         tooltip: 'Action!',
         child: Icon(Icons.tap_and_play), 
         onPressed: () {
-          //globals.recordflag = !globals.recordflag;
+          //globals.inputText = "AAAAA";
           }
       ),
 

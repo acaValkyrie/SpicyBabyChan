@@ -8,14 +8,16 @@ class Test extends StatefulWidget {
 
 class TestState extends State<Test> {
 
-  final inputController = TextEditingController();
-
-  String inputtext = "";
-  bool record = globals.recordflag;
+  
 
   @override
   Widget build(BuildContext context) {
 
+    setState((){});
+
+    String inputtext = globals.inputText;
+    bool record = globals.recordflag;
+    
     if (record) {
       return Scaffold(
         appBar:AppBar(title: Text("開発用ページ"),),
@@ -35,27 +37,14 @@ class TestState extends State<Test> {
           ),
           padding: EdgeInsets.all(10.0),
           margin: EdgeInsets.only(top:50.0,left:20.0,right:20.0),
-          child: TextField(
-            enabled: true,
-            maxLength: 200, //最大文字数
+          child: Text(
+            inputtext,
             style: TextStyle(
               color: Colors.black,
               fontSize: 25.0,
               height: 1.0,
             ),
-            obscureText: false,
             maxLines:10,
-            decoration: const InputDecoration(     
-              hintText: '自由にテキスト入力できる\nスペース',
-            ),
-            controller: inputController,
-            onChanged: (text) {
-              setState(() { 
-                inputtext = text;
-                globals.inputText = inputtext;
-                debugPrint('${record}');
-              });
-            },
           ),
         ),
       );
@@ -79,27 +68,14 @@ class TestState extends State<Test> {
         ),
         padding: EdgeInsets.all(10.0),
         margin: EdgeInsets.only(top:50.0,left:20.0,right:20.0),
-        child: TextField(
-          enabled: true,
-          maxLength: 200, //最大文字数
+        child: Text(
+          inputtext,
           style: TextStyle(
             color: Colors.black,
             fontSize: 25.0,
             height: 1.0,
           ),
-          obscureText: false,
           maxLines:10,
-          decoration: const InputDecoration(     
-            hintText: '自由にテキスト入力できる\nスペース',
-          ),
-          controller: inputController,
-          onChanged: (text) {
-              setState(() { 
-                inputtext = text;
-                globals.inputText = inputtext;
-                debugPrint('${record}');
-              });
-          },
         ),
       ),
     );
