@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
+import 'SpeechRecognision.dart';
 
 class Test extends StatefulWidget {
   @override
@@ -8,17 +9,17 @@ class Test extends StatefulWidget {
 
 class TestState extends State<Test> {
 
-  
-
   @override
   Widget build(BuildContext context) {
 
     setState((){});
 
-    String inputtext = globals.inputText;
-    bool record = globals.recordflag;
+    String inputtext;
+    bool isListening;
+    inputtext = txtupdate(inputtext);
+    isListening = islsn(isListening);
     
-    if (record) {
+    if (isListening) {
       return Scaffold(
         appBar:AppBar(title: Text("開発用ページ"),),
 
