@@ -11,5 +11,6 @@ bool callflag = false;
 //test_route用
 @override
 String inputText = "";
+String inputText2 = "";
 @override
 bool recordflag = false;
