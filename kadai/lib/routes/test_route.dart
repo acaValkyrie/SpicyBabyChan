@@ -15,8 +15,11 @@ class TestState extends State<Test> {
 
   bool speechRecognitionAvailable = false;
   bool isListening = false;
+  bool isMatch = false;
 
   String transcription = '';
+  String represent = '';
+  String text = '';
 
   //String _currentLocale = 'en_US';
   Language selectedLang = languages.first;
@@ -47,17 +50,25 @@ class TestState extends State<Test> {
   Widget build(BuildContext context) {
 
     setState((){});
+    text = transcription + represent;
 /*
     String inputtext;
     bool isListening;
     inputtext = txtupdate(inputtext);
     isListening = islsn(isListening);
 */
+
+    //連続音声認識用
     if(!isListening) {
+      represent = '\n音声認識してないです';
       start();
+      represent = '\n音声認識中です';
     }
-    
-    if (isListening) {
+
+    isMatch = globals.namedataG.contains(transcription);
+
+    //赤くなる
+    if (isMatch) {
       return Scaffold(
         appBar:AppBar(title: Text("開発用ページ"),),
 
@@ -77,7 +88,7 @@ class TestState extends State<Test> {
           padding: EdgeInsets.all(10.0),
           margin: EdgeInsets.only(top:50.0,left:20.0,right:20.0),
           child: Text(
-            transcription,
+            text,
             style: TextStyle(
               color: Colors.black,
               fontSize: 25.0,
@@ -88,7 +99,7 @@ class TestState extends State<Test> {
         ),
       );
     }
-
+    //黒くなる
     else return Scaffold(
 
       appBar:AppBar(title: Text("開発用ページ"),),
@@ -109,7 +120,7 @@ class TestState extends State<Test> {
         padding: EdgeInsets.all(10.0),
         margin: EdgeInsets.only(top:50.0,left:20.0,right:20.0),
         child: Text(
-          transcription,
+          text,
           style: TextStyle(
             color: Colors.black,
             fontSize: 25.0,
