@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'root.dart';
-//import 'package:provider/provider.dart';
-//import 'dart:async';
+import 'home.dart';
+import 'routes/add_route.dart';
+import 'routes/test_route.dart';
  
 void main() => runApp(MyApp());
 
@@ -15,7 +15,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
               primaryColor: Colors.blueGrey[900],
       ),
-      home: RootWidget(),
+      home: new HomeWidget(),
+      initialRoute: '/',
+      routes: <String, WidgetBuilder>{
+        '/home': (BuildContext context) => HomeWidget(),
+        '/option': (BuildContext context) => OptionWidget(),
+        '/add': (BuildContext context) => AddWidget(),
+        '/test': (BuildContext context) => TestWidget(),
+      },
     );
   }
 }

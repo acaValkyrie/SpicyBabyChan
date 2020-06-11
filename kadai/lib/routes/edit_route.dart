@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 
- 
 int index;
 
 class Edit extends StatefulWidget {

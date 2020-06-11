@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
  
-class Add extends StatefulWidget {
+class AddWidget extends StatefulWidget {
+  AddWidget({Key key}) : super(key: key);
   @override
   AddState createState() => AddState();
 }
 
-class AddState extends State<Add> {
+class AddState extends State<AddWidget> {
 
   final inputController = TextEditingController();
 
