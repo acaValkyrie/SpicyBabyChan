@@ -2,20 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speech/flutter_speech.dart';
 
-
-String txtupdate(String str){
-  str = "aiueo,\n日本語表示\n改行\n";
-  str += "できるかな？";
-  return str;
-}
-
-bool islsn(bool lisn){
-  lisn = true;
-  return lisn;
-}
-
-const languages = const [const Language('Japanese', 'jp_JP'),];
-
 class Language {
   final String name;
   final String code;
@@ -23,7 +9,7 @@ class Language {
   const Language(this.name, this.code);
 }
 
-
+/*
 class SpRecgMyApp extends StatefulWidget {
   @override
   _SpRecgMyAppState createState() => new _SpRecgMyAppState();
@@ -171,3 +157,4 @@ class _SpRecgMyAppState extends State<SpRecgMyApp> {
 
   void errorHandler() => activateSpeechRecognizer();
 }
+*/
