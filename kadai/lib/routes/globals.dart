@@ -1,8 +1,8 @@
 library my_prj.globals;
 
-List<String> namedataG = ["せよぎ","AngE・L"];
+List<String> namedataG = ["せよぎ","AngE・L","田中","佐藤",];
 //名前
-List<bool> flagG = [false,false];
+List<bool> flagG = [false,false,false,false,];
 //それぞれの名前をトリガにするか/しないか
 bool backflag = false;//バックグラウンド動作
 bool musicflag = false;//音楽再生
