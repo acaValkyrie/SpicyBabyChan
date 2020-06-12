@@ -69,16 +69,16 @@ class NameState extends State<NameWidget> {
           IconButton(
             padding: const EdgeInsets.all(8.0),
             icon:Icon(Icons.edit),
-            onPressed:(){
-              Navigator.of(context).pushNamed('/test');
+            onPressed:()async{
+              await Navigator.of(context).pushNamed('/test');
               this.setState(() {});
             },
           ),
           IconButton(
             padding: const EdgeInsets.all(8.0),
             icon:Icon(Icons.add),
-            onPressed:(){
-              Navigator.of(context).pushNamed('/add');
+            onPressed:()async{
+              await Navigator.of(context).pushNamed('/add');
               this.setState(() {});
             },
           ),
@@ -119,12 +119,12 @@ class NameState extends State<NameWidget> {
                   "編集",
                   style: TextStyle(color: Colors.white),
                 ),
-                onTap:(){
-                  Navigator.push(context,new MaterialPageRoute(
+                onTap:()async{
+                  await Navigator.push(context,new MaterialPageRoute(
                       builder: (context){return Edit(index: index);}
                     )
                   );
-                  setState(() async {});
+                  setState(() {});
                 },
               ),
               IconSlideAction(

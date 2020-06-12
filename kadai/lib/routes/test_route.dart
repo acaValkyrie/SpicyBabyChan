@@ -10,7 +10,7 @@ class TestWidget extends StatefulWidget {
   TestState createState() => TestState();
 }
 
-class TestState extends State<Test> {
+class TestState extends State<TestWidget> {
   SpeechRecognition speech;
 
   bool speechRecognitionAvailable = false;
