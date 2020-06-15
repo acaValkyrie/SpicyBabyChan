@@ -14,9 +14,6 @@ class TestState extends State<TestWidget> {
   SpeechRecognition speech;
 
   bool speechRecognitionAvailable = false;
-  String inputtext = '';
-  String inputtext2 = '';
-  bool isListening = false;
   bool isMach = false;
 
   Language selectedLang = languages.first;
@@ -45,10 +42,10 @@ class TestState extends State<TestWidget> {
   Widget build(BuildContext context) {
     setState(() {});
 
-    if (isListening) {
-      inputtext2 = "音声認識真っ最中\n";
+    if (globals.isListening) {
+      globals.inputText2 = "音声認識真っ最中\n";
     } else {
-      inputtext2 = "";
+      globals.inputText2 = "";
       start();
     }
 
@@ -74,7 +71,7 @@ class TestState extends State<TestWidget> {
                   padding: EdgeInsets.all(10.0),
                   margin: EdgeInsets.only(top: 50.0, left: 20.0, right: 20.0),
                   child: Text(
-                    inputtext,
+                    globals.inputText,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 25.0,
@@ -92,7 +89,7 @@ class TestState extends State<TestWidget> {
                   padding: EdgeInsets.all(10.0),
                   margin: EdgeInsets.only(top: 50.0, left: 20.0, right: 20.0),
                   child: Text(
-                    inputtext2,
+                    globals.inputText2,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 25.0,
@@ -128,7 +125,7 @@ class TestState extends State<TestWidget> {
                   padding: EdgeInsets.all(10.0),
                   margin: EdgeInsets.only(top: 50.0, left: 20.0, right: 20.0),
                   child: Text(
-                    inputtext,
+                    globals.inputText,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 25.0,
@@ -146,7 +143,7 @@ class TestState extends State<TestWidget> {
                   padding: EdgeInsets.all(10.0),
                   margin: EdgeInsets.only(top: 50.0, left: 20.0, right: 20.0),
                   child: Text(
-                    inputtext2,
+                    globals.inputText2,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 25.0,
@@ -167,17 +164,17 @@ class TestState extends State<TestWidget> {
         return speech.listen().then((result) {
           print('_MyAppState.start => result $result');
           setState(() {
-            isListening = result;
+            globals.isListening = result;
           });
         });
       });
 
   void cancel() =>
-      speech.cancel().then((_) => setState(() => isListening = false));
+      speech.cancel().then((_) => setState(() => globals.isListening = false));
 
   void stop() =>
       speech.stop().then((_) {
-        setState(() => isListening = false);
+        setState(() => globals.isListening = false);
       });
 
   void onSpeechAvailability(bool result) =>
@@ -190,17 +187,17 @@ class TestState extends State<TestWidget> {
   }
 
   void onRecognitionStarted() {
-    setState(() => isListening = true);
+    setState(() => globals.isListening = true);
   }
 
   void onRecognitionResult(String text) {
     print('_MyAppState.onRecognitionResult... $text');
-    setState(() => inputtext = text);
+    setState(() => globals.inputText = text);
   }
 
   void onRecognitionComplete(String text) {
     print('_MyAppState.onRecognitionComplete... $text');
-    setState(() => isListening = false);
+    setState(() => globals.isListening = false);
   }
 
   void errorHandler() => activateSpeechRecognizer();
