@@ -13,4 +13,4 @@ bool callflag = false;
 String inputText = "";
 String inputText2 = "";
 @override
-bool recordflag = false;
+bool isListening = false;
