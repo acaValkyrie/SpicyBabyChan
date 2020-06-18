@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+/*import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speech/flutter_speech.dart';
 
@@ -7,7 +7,7 @@ class Language {
   final String code;
 
   const Language(this.name, this.code);
-}
+}*/
 
 /*
 class SpRecgMyApp extends StatefulWidget {

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
-import 'SpeechRecognision.dart';
 import 'package:flutter_speech/flutter_speech.dart';
+
+class Language {
+  final String name;
+  final String code;
+
+  const Language(this.name, this.code);
+}
 
 const languages = const [const Language('Japanese', 'jp_JP'),];
 
@@ -15,6 +21,7 @@ class TestState extends State<TestWidget> {
 
   bool speechRecognitionAvailable = false;
   bool isMach = false;
+  bool isListening = false;
 
   Language selectedLang = languages.first;
 
@@ -42,14 +49,15 @@ class TestState extends State<TestWidget> {
   Widget build(BuildContext context) {
     setState(() {});
 
-    if (globals.isListening) {
-      globals.inputText2 = "音声認識真っ最中\n";
-    } else {
+    if(!isListening && speechRecognitionAvailable){
       globals.inputText2 = "";
       start();
     }
+    if(isListening){
+      globals.inputText2 = "isListening : true\n";
+    }
 
-    if (isMach) {
+    if (isListening) {
       return Scaffold(
           appBar: AppBar(title: Text("開発用ページ"),),
 
@@ -157,6 +165,16 @@ class TestState extends State<TestWidget> {
       );
   }
 
+  List<CheckedPopupMenuItem<Language>> get _buildLanguagesWidgets => languages.map((l) => new CheckedPopupMenuItem<Language>(
+    value: l,
+    checked: selectedLang == l,
+    child: new Text(l.name),
+  ))
+      .toList();
+
+  void _selectLangHandler(Language lang) {
+    setState(() => selectedLang = lang);
+  }
 
   //SpeechRecognisionFunction
   void start() =>
@@ -164,17 +182,17 @@ class TestState extends State<TestWidget> {
         return speech.listen().then((result) {
           print('_MyAppState.start => result $result');
           setState(() {
-            globals.isListening = result;
+            isListening = result;
           });
         });
       });
 
   void cancel() =>
-      speech.cancel().then((_) => setState(() => globals.isListening = false));
+      speech.cancel().then((_) => setState(() => isListening = false));
 
   void stop() =>
       speech.stop().then((_) {
-        setState(() => globals.isListening = false);
+        setState(() => isListening = false);
       });
 
   void onSpeechAvailability(bool result) =>
@@ -187,7 +205,7 @@ class TestState extends State<TestWidget> {
   }
 
   void onRecognitionStarted() {
-    setState(() => globals.isListening = true);
+    setState(() => isListening = true);
   }
 
   void onRecognitionResult(String text) {
@@ -197,7 +215,7 @@ class TestState extends State<TestWidget> {
 
   void onRecognitionComplete(String text) {
     print('_MyAppState.onRecognitionComplete... $text');
-    setState(() => globals.isListening = false);
+    setState(() => isListening = false);
   }
 
   void errorHandler() => activateSpeechRecognizer();
