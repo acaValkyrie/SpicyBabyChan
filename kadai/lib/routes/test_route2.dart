@@ -15,14 +15,14 @@ class Test2State extends State<Test2Widget> {
   AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer();
 
   final audio = Audio("assets/audios/_7thsence.mp3");
-  
-  
+
+
   @override
   void initState() {
     super.initState();
     _assetsAudioPlayer.stop();
   }
- 
+
   @override
   Widget build(BuildContext context) {
       return Scaffold(
@@ -31,7 +31,7 @@ class Test2State extends State<Test2Widget> {
         ),
         floatingActionButton: FloatingActionButton(
           tooltip: 'Action!',
-          child: Icon(Icons.stop), 
+          child: Icon(Icons.stop),
           onPressed: () async{
             _assetsAudioPlayer.open(
               audio,

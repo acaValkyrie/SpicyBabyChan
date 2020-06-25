@@ -95,7 +95,7 @@ class NameState extends State<NameWidget> {
 
       floatingActionButton: FloatingActionButton(
         tooltip: 'Action!',
-        child: Icon(Icons.tap_and_play), 
+        child: Icon(Icons.tap_and_play),
         onPressed: () {
           globals.callFunc();
           setState(() {});
@@ -160,21 +160,21 @@ class OptionState extends State<OptionWidget> {
     bool _backValue = globals.backflag;
     bool _musicValue = globals.musicflag;
     bool _moveValue = globals.moveflag;
-  
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(title: Text("設定"),),
 
-      body: Container( 
+      body: Container(
         margin: EdgeInsets.only(top:50.0,left:10.0,right:10.0),
         child: Column(
           children: <Widget>[
             SwitchListTile(
             value: _backValue,
             onChanged: (bool value) {
-              setState(() { 
+              setState(() {
                 _backValue = value;
                 globals.backflag = _backValue;
               });
@@ -184,7 +184,7 @@ class OptionState extends State<OptionWidget> {
             SwitchListTile(
             value: _musicValue,
             onChanged: (bool value) {
-              setState(() { 
+              setState(() {
                 _musicValue = value;
                 globals.musicflag = _musicValue;
               });
@@ -194,7 +194,7 @@ class OptionState extends State<OptionWidget> {
             SwitchListTile(
             value: _moveValue,
             onChanged: (bool value) {
-              setState(() { 
+              setState(() {
                 _moveValue = value;
                 globals.moveflag = _moveValue;
               });
