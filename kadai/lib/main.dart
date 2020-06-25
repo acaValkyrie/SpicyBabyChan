@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 import 'routes/add_route.dart';
 import 'routes/test_route.dart';
+import 'routes/test_route2.dart';
+ 
  
 void main() => runApp(MyApp());
 
@@ -22,6 +24,7 @@ class MyApp extends StatelessWidget {
         '/option': (BuildContext context) => OptionWidget(),
         '/add': (BuildContext context) => AddWidget(),
         '/test': (BuildContext context) => TestWidget(),
+        '/test2': (BuildContext context) => Test2Widget(),
       },
     );
   }

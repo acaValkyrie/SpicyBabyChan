@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vibration/vibration.dart';
 import 'routes/globals.dart' as globals;
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'routes/edit_route.dart';
@@ -12,7 +11,7 @@ class HomeWidget extends StatefulWidget {
 
 class HomeState extends State<HomeWidget> {
 
-   int _currentIndex = 0;
+  int _currentIndex = 0;
 
   final _pageWidgets = [
     NameWidget(),
@@ -68,7 +67,15 @@ class NameState extends State<NameWidget> {
         actions: <Widget>[
           IconButton(
             padding: const EdgeInsets.all(8.0),
-            icon:Icon(Icons.edit),
+            icon:Icon(Icons.music_note),
+            onPressed:()async{
+              await Navigator.of(context).pushNamed('/test2');
+              this.setState(() {});
+            },
+          ),
+          IconButton(
+            padding: const EdgeInsets.all(8.0),
+            icon:Icon(Icons.mic),
             onPressed:()async{
               await Navigator.of(context).pushNamed('/test');
               this.setState(() {});
@@ -90,9 +97,9 @@ class NameState extends State<NameWidget> {
         tooltip: 'Action!',
         child: Icon(Icons.tap_and_play), 
         onPressed: () {
-           Vibration.vibrate(duration: 500 ,amplitude: 128);
-           setState(() { });
-          }
+          globals.callFunc();
+          setState(() {});
+        }
       ),
 
       body: ListView.separated(
