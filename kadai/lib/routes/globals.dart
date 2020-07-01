@@ -2,7 +2,7 @@ library my_prj.globals;
 import 'package:vibration/vibration.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 
-List<String> namedataG = ["せよぎ","AngE・L","田中","佐藤",];
+List<String> namedataG = ["せよぎ","seyogi","田中","chiba","千葉",];
 //名前
 List<bool> flagG = [false,false,false,false,];
 //それぞれの名前をトリガにするか/しないか
