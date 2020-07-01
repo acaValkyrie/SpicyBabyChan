@@ -21,7 +21,7 @@ class TestState extends State<TestWidget> {
 
   bool speechRecognitionAvailable = false;
   bool isMach = false;
-  bool isListening = false;
+  //bool isListening = false;
 
   Language selectedLang = languages.first;
 
@@ -49,15 +49,23 @@ class TestState extends State<TestWidget> {
   Widget build(BuildContext context) {
     setState(() {});
 
-    if(!isListening && speechRecognitionAvailable){
+    globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
+
+    if(!globals.isListening && speechRecognitionAvailable){
       globals.inputText2 = "";
       start();
     }
-    if(isListening){
+    if(globals.isListening){
       globals.inputText2 = "isListening : true\n";
+    }else{
+      globals.inputText2 = "isListening : false\n";
     }
 
-    if (isListening) {
+    if(isMach){
+      //globals.callFunc();
+    }
+
+    if (isMach) {
       return Scaffold(
           appBar: AppBar(title: Text("開発用ページ"),),
 
@@ -182,17 +190,17 @@ class TestState extends State<TestWidget> {
         return speech.listen().then((result) {
           print('_MyAppState.start => result $result');
           setState(() {
-            isListening = result;
+            globals.isListening = result;
           });
         });
       });
 
   void cancel() =>
-      speech.cancel().then((_) => setState(() => isListening = false));
+      speech.cancel().then((_) => setState(() => globals.isListening = false));
 
   void stop() =>
       speech.stop().then((_) {
-        setState(() => isListening = false);
+        setState(() => globals.isListening = false);
       });
 
   void onSpeechAvailability(bool result) =>
@@ -205,7 +213,7 @@ class TestState extends State<TestWidget> {
   }
 
   void onRecognitionStarted() {
-    setState(() => isListening = true);
+    setState(() => globals.isListening = true);
   }
 
   void onRecognitionResult(String text) {
@@ -215,7 +223,7 @@ class TestState extends State<TestWidget> {
 
   void onRecognitionComplete(String text) {
     print('_MyAppState.onRecognitionComplete... $text');
-    setState(() => isListening = false);
+    setState(() => globals.isListening = false);
   }
 
   void errorHandler() => activateSpeechRecognizer();
