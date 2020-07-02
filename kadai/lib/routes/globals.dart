@@ -17,9 +17,6 @@ String inputText2 = "";
 @override
 bool isListening = false;
 
-<<<<<<< HEAD
-
-=======
 void callFunc(){
 
   AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer();
@@ -31,4 +28,4 @@ void callFunc(){
     showNotification: true,
   );
 }
->>>>>>> 8797b5f2a6eed85f8216659f7d42ceefd99218dd
+

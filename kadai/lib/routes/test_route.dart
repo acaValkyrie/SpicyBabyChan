@@ -9,7 +9,7 @@ class Language {
   const Language(this.name, this.code);
 }
 
-const languages = const [const Language('Japanese', 'jp_JP'),];
+const languages = const [const Language('English', 'en_EN'),];
 
 class TestWidget extends StatefulWidget {
   @override
@@ -40,24 +40,33 @@ class TestState extends State<TestWidget> {
     speech.setRecognitionResultHandler(onRecognitionResult);
     speech.setRecognitionCompleteHandler(onRecognitionComplete);
     speech.setErrorHandler(errorHandler);
-    speech.activate('jp_JP').then((res) {
+    speech.activate('en_EN').then((res) {
+      print("on activateSpeechRecognizer. res = ");
+      print(res);
       setState(() => speechRecognitionAvailable = res);
+      print("exit from setState");
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    print("into Widget build");
     setState(() {});
-
+    print("exit setstate");
     globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
 
-    if(!globals.isListening && speechRecognitionAvailable){
+    if(!globals.isListening){
+      print("Let's start()");
       globals.inputText2 = "";
       start();
     }
     if(globals.isListening){
+      print("isListening = true");
+      print("avalable:");
+      print(speechRecognitionAvailable);
       globals.inputText2 = "isListening : true\n";
     }else{
+      print("isListening = false");
       globals.inputText2 = "isListening : false\n";
     }
 
@@ -190,21 +199,29 @@ class TestState extends State<TestWidget> {
         return speech.listen().then((result) {
           print('_MyAppState.start => result $result');
           setState(() {
+            print("on start()\n");
             globals.isListening = result;
           });
         });
       });
 
   void cancel() =>
-      speech.cancel().then((_) => setState(() => globals.isListening = false));
+      speech.cancel().then((_) => setState((){
+        print("on cancel()");
+        globals.isListening = false;
+      }));
+
 
   void stop() =>
       speech.stop().then((_) {
+        print("on stop()");
         setState(() => globals.isListening = false);
       });
 
-  void onSpeechAvailability(bool result) =>
-      setState(() => speechRecognitionAvailable = result);
+  void onSpeechAvailability(bool result) {
+    print("on onSpeechAvailability()");
+    setState(() => speechRecognitionAvailable = result);
+  }
 
   void onCurrentLocale(String locale) {
     print('_MyAppState.onCurrentLocale... $locale');
@@ -213,19 +230,25 @@ class TestState extends State<TestWidget> {
   }
 
   void onRecognitionStarted() {
+    print("on onRecognitionStarted()");
     setState(() => globals.isListening = true);
   }
 
   void onRecognitionResult(String text) {
+    print("on onRecognitionResult");
     print('_MyAppState.onRecognitionResult... $text');
     setState(() => globals.inputText = text);
   }
 
   void onRecognitionComplete(String text) {
+    print("on onRecognitionComplete");
     print('_MyAppState.onRecognitionComplete... $text');
     setState(() => globals.isListening = false);
   }
 
-  void errorHandler() => activateSpeechRecognizer();
+  void errorHandler(){
+    print("on errorHandler");
+    activateSpeechRecognizer();
+  }
 
 }
