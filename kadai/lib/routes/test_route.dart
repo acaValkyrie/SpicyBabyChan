@@ -55,6 +55,20 @@ class TestState extends State<TestWidget> {
     print("exit setstate");
     globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
 
+    print("isListening:");
+    print(globals.isListening);
+    print("speechRecognitionAvailable:");
+    print(speechRecognitionAvailable);
+
+    if(speechRecognitionAvailable){
+      if(globals.isListening){
+        globals.isListening = false;
+      }else{
+        globals.inputText2 = "";
+        start();
+      }
+    }
+    /*
     if(!globals.isListening){
       print("Let's start()");
       globals.inputText2 = "";
@@ -68,7 +82,7 @@ class TestState extends State<TestWidget> {
     }else{
       print("isListening = false");
       globals.inputText2 = "isListening : false\n";
-    }
+    }*/
 
     if(isMach){
       //globals.callFunc();
