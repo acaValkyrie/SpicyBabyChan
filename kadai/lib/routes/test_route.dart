@@ -9,7 +9,7 @@ class Language {
   const Language(this.name, this.code);
 }
 
-const languages = const [const Language('English', 'en_EN'),];
+const languages = const [const Language('Japanese', 'jp_JP'),];
 
 class TestWidget extends StatefulWidget {
   @override
@@ -40,12 +40,13 @@ class TestState extends State<TestWidget> {
     speech.setRecognitionResultHandler(onRecognitionResult);
     speech.setRecognitionCompleteHandler(onRecognitionComplete);
     speech.setErrorHandler(errorHandler);
-    speech.activate('en_EN').then((res) {
+    speech.activate('jp_JP').then((res) {
       print("on activateSpeechRecognizer. res = ");
       print(res);
       setState(() => speechRecognitionAvailable = res);
       print("exit from setState");
     });
+    onCurrentLocale('jp_JP');
   }
 
   @override
@@ -61,10 +62,11 @@ class TestState extends State<TestWidget> {
     print(speechRecognitionAvailable);
 
     if(speechRecognitionAvailable){
+      globals.inputText2 = "available";
       if(globals.isListening){
         globals.isListening = false;
+        globals.inputText2 += "\nisListening : true\n";
       }else{
-        globals.inputText2 = "";
         start();
       }
     }
@@ -90,7 +92,7 @@ class TestState extends State<TestWidget> {
 
     if (isMach) {
       return Scaffold(
-          appBar: AppBar(title: Text("開発用ページ"),),
+          appBar: AppBar(title: Text("開発用ページ2"),),
 
           floatingActionButton: FloatingActionButton(
             tooltip: 'Action!',
@@ -144,7 +146,7 @@ class TestState extends State<TestWidget> {
     //黒くなる
     else return Scaffold(
 
-          appBar: AppBar(title: Text("開発用ページ"),),
+          appBar: AppBar(title: Text("開発用ページ2"),),
 
           floatingActionButton: FloatingActionButton(
             tooltip: 'Action!',
