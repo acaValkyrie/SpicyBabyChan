@@ -154,6 +154,7 @@ class TestState extends State<TestWidget> {
             print("on start()\n");
             globals.isListening = result;
           });
+          print('===================================== SPEECH RECOGNITION ENDED ============================================');
         });
       });
 
@@ -200,9 +201,10 @@ class TestState extends State<TestWidget> {
   }
 
   void errorHandler(){
-    print("on errorHandler");
+    print('===================================== ERROR HANDLER CALLED ==================================================');
     activateSpeechRecognizer();
     globals.isListening = false;
+    print('===================================== ERROR HANDLER ENDED ===================================================');
   }
 
 }
