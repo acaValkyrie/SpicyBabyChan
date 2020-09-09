@@ -27,7 +27,6 @@ bool isListening = false;
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPluginG = homes.flutterLocalNotificationsPlugin;
 NotificationDetails platformChannelSpecifics;
 
-
   final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
   final String TARGET_DEVICE_NAME = "ESP32 FLUTTER";
