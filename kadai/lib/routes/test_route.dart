@@ -47,6 +47,7 @@ class TestState extends State<TestWidget> {
       print(res);
       setState(() => speechRecognitionAvailable = res);
       print("exit from setState");
+      //globals.isListening = false;
     });
     onCurrentLocale('jp_JP');
   }
@@ -65,35 +66,21 @@ class TestState extends State<TestWidget> {
     print(speechRecognitionAvailable);
 
     if(speechRecognitionAvailable){
-      globals.inputText2 = "available";
+      globals.inputText2 = "Speech Recognition Available";
       if(globals.isListening){
         globals.isListening = false;
-        globals.inputText2 += "\nisListening : true\n";
+        globals.inputText2 += "\nisListening : false\n";
       }else{
+        globals.inputText2 += "\nDoing Recognition";
         start();
       }
     }
-    /*
-    if(!globals.isListening){
-      print("Let's start()");
-      globals.inputText2 = "";
-      start();
-    }
-    if(globals.isListening){
-      print("isListening = true");
-      print("avalable:");
-      print(speechRecognitionAvailable);
-      globals.inputText2 = "isListening : true\n";
-    }else{
-      print("isListening = false");
-      globals.inputText2 = "isListening : false\n";
-    }*/
 
     if(isMach){
       //globals.callFunc();
     }
     return Scaffold(
-        appBar: AppBar(title: Text("開発用ページ3"),),
+        appBar: AppBar(title: Text("開発用ページ09/09"),),
 
         floatingActionButton: FloatingActionButton(
           tooltip: 'Action!',
@@ -160,6 +147,8 @@ class TestState extends State<TestWidget> {
   void start() =>
       speech.activate(selectedLang.code).then((_) {
         return speech.listen().then((result) {
+          print('===================================== SPEECH RECOGNITION STARTED ==========================================');
+          print('VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV');
           print('_MyAppState.start => result $result');
           setState(() {
             print("on start()\n");
@@ -201,6 +190,7 @@ class TestState extends State<TestWidget> {
     print("on onRecognitionResult");
     print('_MyAppState.onRecognitionResult... $text');
     setState(() => globals.inputText = text);
+    globals.isListening = false;
   }
 
   void onRecognitionComplete(String text) {
@@ -212,6 +202,7 @@ class TestState extends State<TestWidget> {
   void errorHandler(){
     print("on errorHandler");
     activateSpeechRecognizer();
+    globals.isListening = false;
   }
 
 }
