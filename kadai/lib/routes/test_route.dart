@@ -62,7 +62,7 @@ class TestState extends State<TestWidget> {
     }
 
     if(isMach){
-      //globals.callFunc();
+      globals.callFunc();
     }
 
     if (isMach) {

@@ -2,6 +2,19 @@ import 'package:flutter/material.dart';
 import 'routes/globals.dart' as globals;
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'routes/edit_route.dart';
+import 'package:flutter_speech/flutter_speech.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+class Language {
+  final String name;
+  final String code;
+
+  const Language(this.name, this.code);
+}
+
+const languages = const [const Language('Japanese', 'jp_JP'),];
 
 class HomeWidget extends StatefulWidget {
   HomeWidget({Key key}) : super(key: key);
@@ -10,6 +23,45 @@ class HomeWidget extends StatefulWidget {
 }
 
 class HomeState extends State<HomeWidget> {
+
+  SpeechRecognition speech;
+
+  bool speechRecognitionAvailable = false;
+  bool isMach = false;
+  bool isBLT = globals.bltflag;
+
+  Language selectedLang = languages.first;
+
+  @override
+  initState() {
+    super.initState();
+    activateSpeechRecognizer();
+    _notificationSetup();
+  }
+
+
+  void _notificationSetup(){
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  void activateSpeechRecognizer() {
+    print('_MyAppState.activateSpeechRecognizer... ');
+    speech = new SpeechRecognition();
+    speech.setAvailabilityHandler(onSpeechAvailability);
+    speech.setRecognitionStartedHandler(onRecognitionStarted);
+    speech.setRecognitionResultHandler(onRecognitionResult);
+    speech.setRecognitionCompleteHandler(onRecognitionComplete);
+    speech.setErrorHandler(errorHandler);
+    speech.activate('jp_JP').then((res) {
+      setState(() => speechRecognitionAvailable = res);
+    });
+  }
 
   int _currentIndex = 0;
 
@@ -21,6 +73,22 @@ class HomeState extends State<HomeWidget> {
   Widget build(BuildContext context) {
 
     setState((){});
+
+    globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
+
+    if(!globals.isListening && speechRecognitionAvailable){
+      globals.inputText2 = "";
+      start();
+    }
+    if(globals.isListening){
+      globals.inputText2 = "isListening : true\n";
+    }else{
+      globals.inputText2 = "isListening : false\n";
+    }
+
+    if(isMach){
+      globals.callFunc();
+    }
 
     return Scaffold(
       body:_pageWidgets.elementAt(_currentIndex),
@@ -40,6 +108,60 @@ class HomeState extends State<HomeWidget> {
       ),
     );
   }
+
+  List<CheckedPopupMenuItem<Language>> get _buildLanguagesWidgets => languages.map((l) => new CheckedPopupMenuItem<Language>(
+    value: l,
+    checked: selectedLang == l,
+    child: new Text(l.name),
+  ))
+      .toList();
+
+  void _selectLangHandler(Language lang) {
+    setState(() => selectedLang = lang);
+  }
+
+  void start() =>
+      speech.activate(selectedLang.code).then((_) {
+        return speech.listen().then((result) {
+          print('_MyAppState.start => result $result');
+          setState(() {
+            globals.isListening = result;
+          });
+        });
+      });
+
+  void cancel() =>
+      speech.cancel().then((_) => setState(() => globals.isListening = false));
+
+  void stop() =>
+      speech.stop().then((_) {
+        setState(() => globals.isListening = false);
+      });
+
+  void onSpeechAvailability(bool result) =>
+      setState(() => speechRecognitionAvailable = result);
+
+  void onCurrentLocale(String locale) {
+    print('_MyAppState.onCurrentLocale... $locale');
+    setState(
+            () => selectedLang = languages.firstWhere((l) => l.code == locale));
+  }
+
+  void onRecognitionStarted() {
+    setState(() => globals.isListening = true);
+  }
+
+  void onRecognitionResult(String text) {
+    print('_MyAppState.onRecognitionResult... $text');
+    setState(() => globals.inputText = text);
+  }
+
+  void onRecognitionComplete(String text) {
+    print('_MyAppState.onRecognitionComplete... $text');
+    setState(() => globals.isListening = false);
+  }
+
+  void errorHandler() => activateSpeechRecognizer();
 
   void _onItemTapped(int index) => setState(() => _currentIndex = index);
 }
@@ -65,14 +187,7 @@ class NameState extends State<NameWidget> {
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
-          IconButton(
-            padding: const EdgeInsets.all(8.0),
-            icon:Icon(Icons.music_note),
-            onPressed:()async{
-              await Navigator.of(context).pushNamed('/test2');
-              this.setState(() {});
-            },
-          ),
+          
           IconButton(
             padding: const EdgeInsets.all(8.0),
             icon:Icon(Icons.mic),
@@ -81,6 +196,7 @@ class NameState extends State<NameWidget> {
               this.setState(() {});
             },
           ),
+          
           IconButton(
             padding: const EdgeInsets.all(8.0),
             icon:Icon(Icons.add),
@@ -92,7 +208,7 @@ class NameState extends State<NameWidget> {
         ],
         title: Text("名前編集"),
       ),
-
+      
       floatingActionButton: FloatingActionButton(
         tooltip: 'Action!',
         child: Icon(Icons.tap_and_play),
@@ -101,7 +217,7 @@ class NameState extends State<NameWidget> {
           setState(() {});
         }
       ),
-
+      
       body: ListView.separated(
         itemCount: namedata.length,
         separatorBuilder: (BuildContext context, int index) => Divider(color: Colors.black,),
@@ -145,7 +261,8 @@ class NameState extends State<NameWidget> {
             ]
           );
         }
-      ),
+      )
+      
     );
   }
 }
@@ -159,7 +276,10 @@ class OptionState extends State<OptionWidget> {
 
     bool _backValue = globals.backflag;
     bool _musicValue = globals.musicflag;
-    bool _moveValue = globals.moveflag;
+    bool _bltValue = globals.bltflag;
+    bool _notificationValue = globals.notificationflag;
+
+    
 
   @override
   Widget build(BuildContext context) {
@@ -189,17 +309,29 @@ class OptionState extends State<OptionWidget> {
                 globals.musicflag = _musicValue;
               });
             },
-            title: Text("音楽再生を停止"),
+            title: Text("音楽再生を停止する"),
             ),
             SwitchListTile(
-            value: _moveValue,
+            value: _bltValue,
             onChanged: (bool value) {
               setState(() {
-                _moveValue = value;
-                globals.moveflag = _moveValue;
+                _bltValue = value;
+                globals.bltflag = _bltValue;
+                if(_bltValue) globals.onBluetoothStart();
+                else globals.onBluetoothStop();
               });
             },
-            title: Text("バイブレーションを動作"),
+            title: Text("BlueTooth機器(ESP)と接続する"),
+            ),
+            SwitchListTile(
+            value: _notificationValue,
+            onChanged: (bool value) {
+              setState(() {
+                _notificationValue = value;
+                globals.notificationflag = _notificationValue;
+              });
+            },
+            title: Text("通知をONにする"),
             ),
           ]
         )

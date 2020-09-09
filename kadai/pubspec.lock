@@ -141,11 +141,25 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.1.0"
+  fixnum:
+    dependency: transitive
+    description:
+      name: fixnum
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.10.11"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_blue:
+    dependency: "direct main"
+    description:
+      name: flutter_blue
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.2"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -160,6 +174,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0+14"
+  flutter_local_notifications:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.4+2"
+  flutter_local_notifications_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -394,6 +422,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.13"
+  protobuf:
+    dependency: transitive
+    description:
+      name: protobuf
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   provider:
     dependency: "direct main"
     description:
@@ -423,7 +458,7 @@ packages:
     source: hosted
     version: "0.24.1"
   shared_preferences:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
