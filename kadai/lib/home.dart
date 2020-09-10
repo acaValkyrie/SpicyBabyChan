@@ -14,7 +14,7 @@ class Language {
   const Language(this.name, this.code);
 }
 
-const languages = const [const Language('Japanese', 'jp_JP'),];
+const languages = const [const Language('Japanese', 'ja'),];
 
 class HomeWidget extends StatefulWidget {
   HomeWidget({Key key}) : super(key: key);
@@ -58,7 +58,7 @@ class HomeState extends State<HomeWidget> {
     speech.setRecognitionResultHandler(onRecognitionResult);
     speech.setRecognitionCompleteHandler(onRecognitionComplete);
     speech.setErrorHandler(errorHandler);
-    speech.activate('jp_JP').then((res) {
+    speech.activate(selectedLang.code).then((res) {
       setState(() => speechRecognitionAvailable = res);
     });
   }
@@ -73,22 +73,25 @@ class HomeState extends State<HomeWidget> {
   Widget build(BuildContext context) {
 
     setState((){});
-
     globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
+    //isMach ? Bcolor = Colors.red : Bcolor = Colors.black;//isMachの値によってボタンの色を変える
 
-    if(!globals.isListening && speechRecognitionAvailable){
-      globals.inputText2 = "";
-      start();
-    }
-    if(globals.isListening){
-      globals.inputText2 = "isListening : true\n";
-    }else{
-      globals.inputText2 = "isListening : false\n";
+    print("isListening:");
+    print(globals.isListening);
+    print("speechRecognitionAvailable:");
+    print(speechRecognitionAvailable);
+
+    if(speechRecognitionAvailable){
+      globals.inputText2 = "Speech Recognition Available";
+      if(globals.isListening){
+        globals.isListening = false;
+        globals.inputText2 += "\nisListening : false\n";
+      }else{
+        globals.inputText2 += "\nDoing Recognition";
+        start();
+      }
     }
 
-    if(isMach){
-      globals.callFunc();
-    }
 
     return Scaffold(
       body:_pageWidgets.elementAt(_currentIndex),
@@ -123,10 +126,12 @@ class HomeState extends State<HomeWidget> {
   void start() =>
       speech.activate(selectedLang.code).then((_) {
         return speech.listen().then((result) {
+          print('================== SPEECH RECOGNITION STARTED =================');
           print('_MyAppState.start => result $result');
           setState(() {
             globals.isListening = result;
           });
+          print('=================== SPEECH RECOGNITION ENDED ==================');
         });
       });
 
@@ -161,7 +166,9 @@ class HomeState extends State<HomeWidget> {
     setState(() => globals.isListening = false);
   }
 
-  void errorHandler() => activateSpeechRecognizer();
+  void errorHandler() {
+    activateSpeechRecognizer();
+  }
 
   void _onItemTapped(int index) => setState(() => _currentIndex = index);
 }
@@ -315,10 +322,10 @@ class OptionState extends State<OptionWidget> {
             value: _bltValue,
             onChanged: (bool value) {
               setState(() {
-                _bltValue = value;
-                globals.bltflag = _bltValue;
-                if(_bltValue) globals.onBluetoothStart();
-                else globals.onBluetoothStop();
+                //_bltValue = value;
+                //globals.bltflag = _bltValue;
+                //if(_bltValue) globals.onBluetoothStart();
+                //else globals.onBluetoothStop();
               });
             },
             title: Text("BlueTooth機器(ESP)と接続する"),
