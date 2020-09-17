@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 import 'package:flutter_speech/flutter_speech.dart';
-
-class Language {
-  final String name;
-  final String code;
-
-  const Language(this.name, this.code);
-}
-
-const languages = const [const Language('Japanese', 'jp_JP'),];
+import 'SpeechRecognition.dart' as mSpeech;
 
 class TestWidget extends StatefulWidget {
   @override
@@ -18,12 +10,7 @@ class TestWidget extends StatefulWidget {
 
 class TestState extends State<TestWidget> {
   SpeechRecognition speech;
-
-  bool speechRecognitionAvailable = false;
-  bool isMach = false;
-  //bool isListening = false;
-
-  Language selectedLang = languages.first;
+  mSpeech.Language selectedLang = mSpeech.languages.first;
 
   Color Bcolor = Colors.red;
 
@@ -45,7 +32,7 @@ class TestState extends State<TestWidget> {
     speech.activate('jp_JP').then((res) {
       print("on activateSpeechRecognizer. res = ");
       print(res);
-      setState(() => speechRecognitionAvailable = res);
+      setState(() => mSpeech.speechRecognitionAvailable = res);
       print("exit from setState");
       //globals.isListening = false;
     });
@@ -57,15 +44,13 @@ class TestState extends State<TestWidget> {
     print("into Widget build");
     setState(() {});
     print("exit setstate");
-    globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
-    isMach ? Bcolor = Colors.red : Bcolor = Colors.black;//isMachの値によってボタンの色を変える
+    globals.namedataG.contains(globals.inputText) ? mSpeech.isMach = true : mSpeech.isMach = false;
+    mSpeech.isMach ? Bcolor = Colors.red : Bcolor = Colors.black;//isMachの値によってボタンの色を変える
 
-    print("isListening:");
-    print(globals.isListening);
-    print("speechRecognitionAvailable:");
-    print(speechRecognitionAvailable);
+    mSpeech.printInfo("isListening", globals.isListening);
+    mSpeech.printInfo("speechRecognitionAvailable", mSpeech.speechRecognitionAvailable);
 
-    if(speechRecognitionAvailable){
+    if(mSpeech.speechRecognitionAvailable){
       globals.inputText2 = "Speech Recognition Available";
       if(globals.isListening){
         globals.isListening = false;
@@ -76,7 +61,7 @@ class TestState extends State<TestWidget> {
       }
     }
 
-    if(isMach){
+    if(mSpeech.isMach){
       globals.callFunc();
     }
     return Scaffold(
@@ -132,29 +117,19 @@ class TestState extends State<TestWidget> {
     );
   }
 
-  List<CheckedPopupMenuItem<Language>> get _buildLanguagesWidgets => languages.map((l) => new CheckedPopupMenuItem<Language>(
-    value: l,
-    checked: selectedLang == l,
-    child: new Text(l.name),
-  ))
-      .toList();
-
-  void _selectLangHandler(Language lang) {
-    setState(() => selectedLang = lang);
-  }
 
   //SpeechRecognisionFunction
   void start() =>
       speech.activate(selectedLang.code).then((_) {
         return speech.listen().then((result) {
           print('===================================== SPEECH RECOGNITION STARTED ==========================================');
-          print('VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV');
+          //print('VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV');
           print('_MyAppState.start => result $result');
           setState(() {
             print("on start()\n");
             globals.isListening = result;
           });
-          print('===================================== SPEECH RECOGNITION ENDED ============================================');
+          //print('===================================== SPEECH RECOGNITION ENDED ============================================');
         });
       });
 
@@ -173,13 +148,13 @@ class TestState extends State<TestWidget> {
 
   void onSpeechAvailability(bool result) {
     print("on onSpeechAvailability()");
-    setState(() => speechRecognitionAvailable = result);
+    setState(() => mSpeech.speechRecognitionAvailable = result);
   }
 
   void onCurrentLocale(String locale) {
     print('_MyAppState.onCurrentLocale... $locale');
     setState(
-            () => selectedLang = languages.firstWhere((l) => l.code == locale));
+            () => selectedLang = mSpeech.languages.firstWhere((l) => l.code == locale));
   }
 
   void onRecognitionStarted() {
@@ -201,10 +176,12 @@ class TestState extends State<TestWidget> {
   }
 
   void errorHandler(){
-    print('===================================== ERROR HANDLER CALLED ==================================================');
+    //print('===================================== ERROR HANDLER CALLED ==================================================');
     activateSpeechRecognizer();
     globals.isListening = false;
-    print('===================================== ERROR HANDLER ENDED ===================================================');
+    //print('===================================== ERROR HANDLER ENDED ===================================================');
   }
+
+
 
 }

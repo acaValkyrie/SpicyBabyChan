@@ -3,18 +3,10 @@ import 'routes/globals.dart' as globals;
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'routes/edit_route.dart';
 import 'package:flutter_speech/flutter_speech.dart';
+import 'routes/SpeechRecognition.dart' as mSpeech;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-
-class Language {
-  final String name;
-  final String code;
-
-  const Language(this.name, this.code);
-}
-
-const languages = const [const Language('Japanese', 'ja'),];
 
 class HomeWidget extends StatefulWidget {
   HomeWidget({Key key}) : super(key: key);
@@ -25,17 +17,12 @@ class HomeWidget extends StatefulWidget {
 class HomeState extends State<HomeWidget> {
 
   SpeechRecognition speech;
-
-  bool speechRecognitionAvailable = false;
-  bool isMach = false;
-  bool isBLT = globals.bltflag;
-
-  Language selectedLang = languages.first;
+  mSpeech.Language selectedLang = mSpeech.languages.first;
 
   @override
   initState() {
     super.initState();
-    activateSpeechRecognizer();
+    //activateSpeechRecognizer();
     _notificationSetup();
   }
 
@@ -50,19 +37,6 @@ class HomeState extends State<HomeWidget> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  void activateSpeechRecognizer() {
-    print('_MyAppState.activateSpeechRecognizer... ');
-    speech = new SpeechRecognition();
-    speech.setAvailabilityHandler(onSpeechAvailability);
-    speech.setRecognitionStartedHandler(onRecognitionStarted);
-    speech.setRecognitionResultHandler(onRecognitionResult);
-    speech.setRecognitionCompleteHandler(onRecognitionComplete);
-    speech.setErrorHandler(errorHandler);
-    speech.activate(selectedLang.code).then((res) {
-      setState(() => speechRecognitionAvailable = res);
-    });
-  }
-
   int _currentIndex = 0;
 
   final _pageWidgets = [
@@ -73,25 +47,15 @@ class HomeState extends State<HomeWidget> {
   Widget build(BuildContext context) {
 
     setState((){});
-    globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
+    //globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
     //isMach ? Bcolor = Colors.red : Bcolor = Colors.black;//isMachの値によってボタンの色を変える
 
     print("isListening:");
     print(globals.isListening);
     print("speechRecognitionAvailable:");
-    print(speechRecognitionAvailable);
+    print(mSpeech.speechRecognitionAvailable);
 
-    if(speechRecognitionAvailable){
-      globals.inputText2 = "Speech Recognition Available";
-      if(globals.isListening){
-        globals.isListening = false;
-        globals.inputText2 += "\nisListening : false\n";
-      }else{
-        globals.inputText2 += "\nDoing Recognition";
-        start();
-      }
-    }
-
+    //continueListen();
 
     return Scaffold(
       body:_pageWidgets.elementAt(_currentIndex),
@@ -112,17 +76,18 @@ class HomeState extends State<HomeWidget> {
     );
   }
 
-  List<CheckedPopupMenuItem<Language>> get _buildLanguagesWidgets => languages.map((l) => new CheckedPopupMenuItem<Language>(
-    value: l,
-    checked: selectedLang == l,
-    child: new Text(l.name),
-  ))
-      .toList();
-
-  void _selectLangHandler(Language lang) {
-    setState(() => selectedLang = lang);
+  void activateSpeechRecognizer() {
+    print('_MyAppState.activateSpeechRecognizer... ');
+    speech = new SpeechRecognition();
+    speech.setAvailabilityHandler(onSpeechAvailability);
+    speech.setRecognitionStartedHandler(onRecognitionStarted);
+    speech.setRecognitionResultHandler(onRecognitionResult);
+    speech.setRecognitionCompleteHandler(onRecognitionComplete);
+    speech.setErrorHandler(errorHandler);
+    speech.activate(selectedLang.code).then((res) {
+      setState(() => mSpeech.speechRecognitionAvailable = res);
+    });
   }
-
   void start() =>
       speech.activate(selectedLang.code).then((_) {
         return speech.listen().then((result) {
@@ -135,21 +100,13 @@ class HomeState extends State<HomeWidget> {
         });
       });
 
-  void cancel() =>
-      speech.cancel().then((_) => setState(() => globals.isListening = false));
-
-  void stop() =>
-      speech.stop().then((_) {
-        setState(() => globals.isListening = false);
-      });
-
   void onSpeechAvailability(bool result) =>
-      setState(() => speechRecognitionAvailable = result);
+      setState(() => mSpeech.speechRecognitionAvailable = result);
 
   void onCurrentLocale(String locale) {
     print('_MyAppState.onCurrentLocale... $locale');
     setState(
-            () => selectedLang = languages.firstWhere((l) => l.code == locale));
+            () => selectedLang = mSpeech.languages.firstWhere((l) => l.code == locale));
   }
 
   void onRecognitionStarted() {
@@ -168,6 +125,19 @@ class HomeState extends State<HomeWidget> {
 
   void errorHandler() {
     activateSpeechRecognizer();
+  }
+
+  void continueListen(){
+    if(mSpeech.speechRecognitionAvailable){
+      globals.inputText2 = "Speech Recognition Available";
+      if(globals.isListening){
+        //globals.isListening = false;
+        globals.inputText2 += "\nisListening : true\n";
+      }else{
+        globals.inputText2 += "\nStart Recognition";
+        start();
+      }
+    }
   }
 
   void _onItemTapped(int index) => setState(() => _currentIndex = index);

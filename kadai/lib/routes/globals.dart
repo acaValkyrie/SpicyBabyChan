@@ -2,7 +2,7 @@ library my_prj.globals;
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hello_world/home.dart' as homes;
-import 'package:flutter_blue/flutter_blue.dart';
+//import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:async';
 import 'dart:convert' show utf8;
 
@@ -26,7 +26,7 @@ bool isListening = false;
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPluginG = homes.flutterLocalNotificationsPlugin;
 NotificationDetails platformChannelSpecifics;
-
+/*
   final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
   final String TARGET_DEVICE_NAME = "ESP32 FLUTTER";
@@ -103,14 +103,14 @@ NotificationDetails platformChannelSpecifics;
     List<int> bytes = utf8.encode(data);
     targetCharacteristic.write(bytes);
   }
-
+*/
 void callFunc(){
   AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer();
   final audio = Audio("assets/audios/_7thsence.mp3");
-
+/*
   if(bltflag){
     writeData("LEDon");
-  }
+  }*/
   if(musicflag)
     _assetsAudioPlayer.open(
       audio,
@@ -140,7 +140,7 @@ Future _onNotification() async {
         platformChannelSpecifics
         );  
   } 
-
+/*
 void onBluetoothStart(){
   startScan();
 }   
@@ -149,4 +149,4 @@ void onBluetoothStop(){
   disconnectFromDevice();
   flutterBlue.stopScan();
 }   
-
+*/
