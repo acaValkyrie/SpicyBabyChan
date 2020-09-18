@@ -12,31 +12,12 @@ class TestState extends State<TestWidget> {
   SpeechRecognition speech;
   mSpeech.Language selectedLang = mSpeech.languages.first;
 
-  Color Bcolor = Colors.red;
+  Color ButtonColor = Colors.red;
 
   @override
   initState() {
     super.initState();
     activateSpeechRecognizer();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  void activateSpeechRecognizer() {
-    print('_MyAppState.activateSpeechRecognizer... ');
-    speech = new SpeechRecognition();
-    speech.setAvailabilityHandler(onSpeechAvailability);
-    speech.setRecognitionStartedHandler(onRecognitionStarted);
-    speech.setRecognitionResultHandler(onRecognitionResult);
-    speech.setRecognitionCompleteHandler(onRecognitionComplete);
-    speech.setErrorHandler(errorHandler);
-    speech.activate('jp_JP').then((res) {
-      print("on activateSpeechRecognizer. res = ");
-      print(res);
-      setState(() => mSpeech.speechRecognitionAvailable = res);
-      print("exit from setState");
-      //globals.isListening = false;
-    });
-    onCurrentLocale('jp_JP');
   }
 
   @override
@@ -45,21 +26,12 @@ class TestState extends State<TestWidget> {
     setState(() {});
     print("exit setstate");
     globals.namedataG.contains(globals.inputText) ? mSpeech.isMach = true : mSpeech.isMach = false;
-    mSpeech.isMach ? Bcolor = Colors.red : Bcolor = Colors.black;//isMachの値によってボタンの色を変える
+    mSpeech.isMach ? ButtonColor = Colors.red : ButtonColor = Colors.black;//isMachの値によってボタンの色を変える
 
     mSpeech.printInfo("isListening", globals.isListening);
     mSpeech.printInfo("speechRecognitionAvailable", mSpeech.speechRecognitionAvailable);
 
-    if(mSpeech.speechRecognitionAvailable){
-      globals.inputText2 = "Speech Recognition Available";
-      if(globals.isListening){
-        globals.isListening = false;
-        globals.inputText2 += "\nisListening : false\n";
-      }else{
-        globals.inputText2 += "\nDoing Recognition";
-        start();
-      }
-    }
+
 
     if(mSpeech.isMach){
       globals.callFunc();
@@ -71,7 +43,7 @@ class TestState extends State<TestWidget> {
           tooltip: 'Action!',
           child: Icon(Icons.mic),
           onPressed: () {},
-          backgroundColor: Bcolor,
+          backgroundColor: ButtonColor,
         ),
 
         body: Column(
@@ -117,71 +89,89 @@ class TestState extends State<TestWidget> {
     );
   }
 
+  //SpeechRecognitionFunction
+  void activateSpeechRecognizer() {//activateっていうより更新処理っていうほうが適切かと
+    print('_MyAppState.activateSpeechRecognizer... ');
+    speech = new SpeechRecognition();//ここで新しくSpeechRecognition定義してるし、やっぱりerrorの後のはdestroy()でよかったっぽい？
+    speech.setAvailabilityHandler(onSpeechAvailability);
+    speech.setRecognitionStartedHandler(onRecognitionStarted);
+    speech.setRecognitionResultHandler(onRecognitionResult);
+    speech.setRecognitionCompleteHandler(onRecognitionComplete);
+    speech.setErrorHandler(errorHandler);
+    speech.activate(selectedLang.code).then((res) {
+      mSpeech.printInfo("activate()", res);
+      setState(() => mSpeech.speechRecognitionAvailable = res);
+    });
+    onCurrentLocale(selectedLang.code);
+  }
 
-  //SpeechRecognisionFunction
+  //こいつ実行するとMethodChannel経由で音声認識スタートされる。
   void start() =>
       speech.activate(selectedLang.code).then((_) {
         return speech.listen().then((result) {
-          print('===================================== SPEECH RECOGNITION STARTED ==========================================');
-          //print('VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV');
+          //print('===================================== SPEECH RECOGNITION STARTED ==========================================');
           print('_MyAppState.start => result $result');
           setState(() {
-            print("on start()\n");
+            //print("on start()\n");
             globals.isListening = result;
+            mSpeech.printInfo("now start(). isListening", result);
           });
-          //print('===================================== SPEECH RECOGNITION ENDED ============================================');
         });
       });
 
-  void cancel() =>
-      speech.cancel().then((_) => setState((){
-        print("on cancel()");
-        globals.isListening = false;
-      }));
-
-
-  void stop() =>
-      speech.stop().then((_) {
-        print("on stop()");
-        setState(() => globals.isListening = false);
-      });
-
+  //音声認識が利用可能かどうかを引っ張ってきてくれる
   void onSpeechAvailability(bool result) {
     print("on onSpeechAvailability()");
     setState(() => mSpeech.speechRecognitionAvailable = result);
   }
 
+  //別言語が選択された時用だけど今回は言語は日本語だけだから特に用はない。
   void onCurrentLocale(String locale) {
     print('_MyAppState.onCurrentLocale... $locale');
     setState(
             () => selectedLang = mSpeech.languages.firstWhere((l) => l.code == locale));
   }
 
+  //音声認識開始
   void onRecognitionStarted() {
     print("on onRecognitionStarted()");
     setState(() => globals.isListening = true);
   }
 
+  //途中経過
   void onRecognitionResult(String text) {
     print("on onRecognitionResult");
     print('_MyAppState.onRecognitionResult... $text');
     setState(() => globals.inputText = text);
-    globals.isListening = false;
   }
 
+  //音声認識正常終了
   void onRecognitionComplete(String text) {
     print("on onRecognitionComplete");
     print('_MyAppState.onRecognitionComplete... $text');
     setState(() => globals.isListening = false);
   }
 
+  //エラー発生。聞き取れなかったり誰も何も言わなかったり。あとはBUSY状態で音声認識しようとするとダメっぽい。
   void errorHandler(){
-    //print('===================================== ERROR HANDLER CALLED ==================================================');
     activateSpeechRecognizer();
     globals.isListening = false;
-    //print('===================================== ERROR HANDLER ENDED ===================================================');
   }
 
-
+  void continueListen(){
+    if(mSpeech.speechRecognitionAvailable){
+      globals.inputText2 = "Speech Recognition Available";
+      if(globals.isListening){
+        globals.inputText2 += "\nisListening : true\n";
+        globals.inputText2 += "\nDoing Recognition";
+      }else{
+        globals.inputText2 += "\nisListening : false\n";
+        globals.inputText2 += "\nStart Recognition";
+        start();
+      }
+    }else{
+      globals.inputText2 = "Speech Recognition NOT Available";
+    }
+  }
 
 }

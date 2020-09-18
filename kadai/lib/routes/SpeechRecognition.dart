@@ -12,7 +12,7 @@ class Language {
   const Language(this.name, this.code);
 }
 
-const languages = const [const Language('Japanese', 'ja'),];
+const languages = const [const Language('Japanese', 'ja_JA'),];
 
 Language selectedLang = languages.first;
 
