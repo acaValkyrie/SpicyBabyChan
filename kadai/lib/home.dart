@@ -16,8 +16,8 @@ class HomeWidget extends StatefulWidget {
 
 class HomeState extends State<HomeWidget> {
 
-  SpeechRecognition speech;
-  mSpeech.Language selectedLang = mSpeech.languages.first;
+//  SpeechRecognition speech;
+//  mSpeech.Language selectedLang = mSpeech.languages.first;
 
   @override
   initState() {
@@ -50,10 +50,10 @@ class HomeState extends State<HomeWidget> {
     //globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
     //isMach ? Bcolor = Colors.red : Bcolor = Colors.black;//isMachの値によってボタンの色を変える
 
-    print("isListening:");
-    print(globals.isListening);
-    print("speechRecognitionAvailable:");
-    print(mSpeech.speechRecognitionAvailable);
+    //print("isListening:");
+    //print(globals.isListening);
+    //print("speechRecognitionAvailable:");
+    //print(mSpeech.speechRecognitionAvailable);
 
     //continueListen();
 
@@ -75,7 +75,7 @@ class HomeState extends State<HomeWidget> {
       ),
     );
   }
-
+/*
   void activateSpeechRecognizer() {
     print('_MyAppState.activateSpeechRecognizer... ');
     speech = new SpeechRecognition();
@@ -139,7 +139,7 @@ class HomeState extends State<HomeWidget> {
       }
     }
   }
-
+*/
   void _onItemTapped(int index) => setState(() => _currentIndex = index);
 }
 

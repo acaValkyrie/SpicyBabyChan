@@ -12,6 +12,9 @@ class TestState extends State<TestWidget> {
   SpeechRecognition speech;
   mSpeech.Language selectedLang = mSpeech.languages.first;
 
+  bool speechRecognitionAvailable = false;
+  bool isMach = false;
+
   Color ButtonColor = Colors.red;
 
   @override
@@ -22,34 +25,44 @@ class TestState extends State<TestWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("into Widget build");
+    print("into Widget build======================================");
+    print("speech = $speech");
     setState(() {});
     print("exit setstate");
-    globals.namedataG.contains(globals.inputText) ? mSpeech.isMach = true : mSpeech.isMach = false;
-    mSpeech.isMach ? ButtonColor = Colors.red : ButtonColor = Colors.black;//isMachの値によってボタンの色を変える
+    globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
+    isMach ? ButtonColor = Colors.red : ButtonColor = Colors.black;//isMachの値によってボタンの色を変える
 
     mSpeech.printInfo("isListening", globals.isListening);
-    mSpeech.printInfo("speechRecognitionAvailable", mSpeech.speechRecognitionAvailable);
+    mSpeech.printInfo("speechRecognitionAvailable", speechRecognitionAvailable);
 
+    print("連続音声認識が可能かどうかを見ています。==========");
+    continueListen();
+    print("音声認識が可能かどうかを見ました。=========");
 
-
-    if(mSpeech.isMach){
+    mSpeech.printInfo("isMach", isMach);
+    if(isMach){
+      isMach = false;
       globals.callFunc();
+      globals.inputText = "";
+      print("exit callFunc()");
     }
+
+    //showSpeechInfo();
+
     return Scaffold(
         appBar: AppBar(title: Text("開発用ページ09/09"),),
 
         floatingActionButton: FloatingActionButton(
           tooltip: 'Action!',
           child: Icon(Icons.mic),
-          onPressed: () {},
+          onPressed: start,
           backgroundColor: ButtonColor,
         ),
 
         body: Column(
             children: <Widget>[
               Container(
-                height: 200.0,
+                height: 100.0,
                 width: double.infinity,
                 decoration: new BoxDecoration(
                     border: new Border.all(color: Colors.grey)
@@ -98,31 +111,48 @@ class TestState extends State<TestWidget> {
     speech.setRecognitionResultHandler(onRecognitionResult);
     speech.setRecognitionCompleteHandler(onRecognitionComplete);
     speech.setErrorHandler(errorHandler);
+
     speech.activate(selectedLang.code).then((res) {
       mSpeech.printInfo("activate()", res);
-      setState(() => mSpeech.speechRecognitionAvailable = res);
+      setState(() => speechRecognitionAvailable = res);
     });
-    onCurrentLocale(selectedLang.code);
+    //onCurrentLocale(selectedLang.code);
+    //showSpeechInfo();
   }
 
   //こいつ実行するとMethodChannel経由で音声認識スタートされる。
-  void start() =>
-      speech.activate(selectedLang.code).then((_) {
-        return speech.listen().then((result) {
-          //print('===================================== SPEECH RECOGNITION STARTED ==========================================');
-          print('_MyAppState.start => result $result');
-          setState(() {
-            //print("on start()\n");
-            globals.isListening = result;
-            mSpeech.printInfo("now start(). isListening", result);
-          });
+  void start(){
+    print("start()====================");
+    speech.activate(selectedLang.code).then((_) {
+      return speech.listen().then((result) {
+        //print('===================================== SPEECH RECOGNITION STARTED ==========================================');
+        print('_MyAppState.start => result $result');
+        setState(() {
+          //print("on start()\n");
+          globals.isListening = result;
+          mSpeech.printInfo("now start(). isListening", result);
+          print("start()end================");
         });
       });
+    });
+  }
+
+  void cancel(){
+    print("cancel()==================");
+    speech.cancel().then((_) => setState(() {
+      globals.isListening = false;
+      print("cancel()end===================");
+    }));
+  }
+
+  void stop() => speech.stop().then((_) {
+    setState(() => globals.isListening = false);
+  });
 
   //音声認識が利用可能かどうかを引っ張ってきてくれる
   void onSpeechAvailability(bool result) {
     print("on onSpeechAvailability()");
-    setState(() => mSpeech.speechRecognitionAvailable = result);
+    setState(() => speechRecognitionAvailable = result);
   }
 
   //別言語が選択された時用だけど今回は言語は日本語だけだから特に用はない。
@@ -149,29 +179,52 @@ class TestState extends State<TestWidget> {
   void onRecognitionComplete(String text) {
     print("on onRecognitionComplete");
     print('_MyAppState.onRecognitionComplete... $text');
+    //stop();
     setState(() => globals.isListening = false);
   }
 
   //エラー発生。聞き取れなかったり誰も何も言わなかったり。あとはBUSY状態で音声認識しようとするとダメっぽい。
   void errorHandler(){
+    //cancel();
     activateSpeechRecognizer();
-    globals.isListening = false;
+    //globals.isListening = false;
   }
 
   void continueListen(){
-    if(mSpeech.speechRecognitionAvailable){
+    if(speechRecognitionAvailable){
       globals.inputText2 = "Speech Recognition Available";
       if(globals.isListening){
-        globals.inputText2 += "\nisListening : true\n";
+        //available and listening
+        print("現在音声認識を行っているため飛ばします。");
+        globals.inputText2 += "\nisListening : true";
         globals.inputText2 += "\nDoing Recognition";
+        //globals.isListening = false;
       }else{
-        globals.inputText2 += "\nisListening : false\n";
+        //available and not listening
+        globals.inputText2 += "\nisListening : false";
         globals.inputText2 += "\nStart Recognition";
+        print("連続音声認識を実行します。");
+        //cancel();
         start();
       }
     }else{
+      mSpeech.printInfo("SpeechRecognition NOT Available", speechRecognitionAvailable);
+      if(globals.isListening){
+        //unavailable and listening
+        print("音声認識が実行不可能なのでisListeningをfalseにします。");
+        globals.isListening = false;
+      }
+      //unavailable and not listening
       globals.inputText2 = "Speech Recognition NOT Available";
     }
+  }
+
+  void showSpeechInfo(){
+    mSpeech.printInfo("AvailabilityHandler", onSpeechAvailability);
+    mSpeech.printInfo("StartedHandler", onRecognitionStarted);
+    mSpeech.printInfo("ResultHandler", onRecognitionResult);
+    mSpeech.printInfo("CompleteHandler", onRecognitionComplete);
+    mSpeech.printInfo("ErrorHandler", errorHandler);
   }
 
 }
