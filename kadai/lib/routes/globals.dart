@@ -1,5 +1,5 @@
 library my_prj.globals;
-import 'package:assets_audio_player/assets_audio_player.dart';
+//import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hello_world/home.dart' as homes;
 //import 'package:flutter_blue/flutter_blue.dart';
@@ -105,17 +105,17 @@ NotificationDetails platformChannelSpecifics;
   }
 */
 void callFunc(){
-  AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer();
-  final audio = Audio("assets/audios/_7thsence.mp3");
+  //AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer();
+  //final audio = Audio("assets/audios/_7thsence.mp3");
 /*
   if(bltflag){
     writeData("LEDon");
   }*/
-  if(musicflag)
-    _assetsAudioPlayer.open(
-      audio,
-      showNotification: true,
-    );
+  //if(musicflag)
+    //_assetsAudioPlayer.open(
+      //audio,
+      //showNotification: true,
+    //);
   if(notificationflag) {
     _onNotification();
   }
