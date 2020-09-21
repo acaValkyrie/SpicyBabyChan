@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
-import 'package:flutter_speech/flutter_speech.dart';
+import 'package:flutter_speech/flutter_speech.dart' as fspeech;
 import 'SpeechRecognition.dart' as mSpeech;
 
 class TestWidget extends StatefulWidget {
@@ -9,7 +9,7 @@ class TestWidget extends StatefulWidget {
 }
 
 class TestState extends State<TestWidget> {
-  SpeechRecognition speech;
+  fspeech.SpeechRecognition speech;
   mSpeech.Language selectedLang = mSpeech.languages.first;
 
   bool speechRecognitionAvailable = false;
@@ -55,7 +55,7 @@ class TestState extends State<TestWidget> {
         floatingActionButton: FloatingActionButton(
           tooltip: 'Action!',
           child: Icon(Icons.mic),
-          onPressed: start,
+          onPressed: showSpeechInfo,
           backgroundColor: ButtonColor,
         ),
 
@@ -105,7 +105,7 @@ class TestState extends State<TestWidget> {
   //SpeechRecognitionFunction
   void activateSpeechRecognizer() {//activateっていうより更新処理っていうほうが適切かと
     print('_MyAppState.activateSpeechRecognizer... ');
-    speech = new SpeechRecognition();//ここで新しくSpeechRecognition定義してるし、やっぱりerrorの後のはdestroy()でよかったっぽい？
+    speech = new fspeech.SpeechRecognition();//ここで新しくSpeechRecognition定義してるし、やっぱりerrorの後のはdestroy()でよかったっぽい？
     speech.setAvailabilityHandler(onSpeechAvailability);
     speech.setRecognitionStartedHandler(onRecognitionStarted);
     speech.setRecognitionResultHandler(onRecognitionResult);
@@ -195,9 +195,15 @@ class TestState extends State<TestWidget> {
       globals.inputText2 = "Speech Recognition Available";
       if(globals.isListening){
         //available and listening
-        print("現在音声認識を行っているため飛ばします。");
-        globals.inputText2 += "\nisListening : true";
-        globals.inputText2 += "\nDoing Recognition";
+        if(fspeech.ErrorCode != 7) {
+          print("現在音声認識を行っているため飛ばします。");
+          globals.inputText2 += "\nisListening : true";
+          globals.inputText2 += "\nDoing Recognition";
+        }else{
+          print("Error Code 7 により音声認識が停止する可能性があるため、start()関数を実行します。");
+          fspeech.ErrorCode = -1;
+          start();
+        }
         //globals.isListening = false;
       }else{
         //available and not listening
@@ -220,11 +226,7 @@ class TestState extends State<TestWidget> {
   }
 
   void showSpeechInfo(){
-    mSpeech.printInfo("AvailabilityHandler", onSpeechAvailability);
-    mSpeech.printInfo("StartedHandler", onRecognitionStarted);
-    mSpeech.printInfo("ResultHandler", onRecognitionResult);
-    mSpeech.printInfo("CompleteHandler", onRecognitionComplete);
-    mSpeech.printInfo("ErrorHandler", errorHandler);
+    mSpeech.printInfo("Error Code is ",fspeech.ErrorCode);
   }
 
 }

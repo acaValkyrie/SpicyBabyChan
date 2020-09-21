@@ -16,7 +16,7 @@ const languages = const [const Language('Japanese', 'ja-JP'),];
 
 Language selectedLang = languages.first;
 
-int mError;
+int mError = -1;
 
 void printInfo(String str, var a){
   print("$str : $a");

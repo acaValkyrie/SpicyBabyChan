@@ -3,6 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/services.dart';
 
+int ErrorCode = -1;
+
 typedef void AvailabilityHandler(bool result);
 typedef void StringResultHandler(String text);
 
@@ -63,6 +65,7 @@ class SpeechRecognition {
         break;
       case "speech.onError":
         errorHandler();
+        ErrorCode = call.arguments;
         break;
       default:
         print('Unknowm method ${call.method} ');
