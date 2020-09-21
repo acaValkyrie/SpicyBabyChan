@@ -29,8 +29,8 @@ class TestState extends State<TestWidget> {
     print("speech = $speech");
     setState(() {});
     print("exit setstate");
-    globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
-    isMach ? ButtonColor = Colors.red : ButtonColor = Colors.black;//isMachの値によってボタンの色を変える
+    isNameMatch();
+    ButtonColor = isMach ? Colors.red : Colors.black;//isMachの値によってボタンの色を変える
 
     mSpeech.printInfo("isListening", globals.isListening);
     mSpeech.printInfo("speechRecognitionAvailable", speechRecognitionAvailable);
@@ -40,6 +40,7 @@ class TestState extends State<TestWidget> {
     print("音声認識が可能かどうかを見ました。=========");
 
     mSpeech.printInfo("isMach", isMach);
+
     if(isMach){
       isMach = false;
       globals.callFunc();
@@ -50,7 +51,7 @@ class TestState extends State<TestWidget> {
     //showSpeechInfo();
 
     return Scaffold(
-        appBar: AppBar(title: Text("開発用ページ09/09"),),
+        appBar: AppBar(title: Text("開発用ページ09/21"),),
 
         floatingActionButton: FloatingActionButton(
           tooltip: 'Action!',
@@ -105,7 +106,7 @@ class TestState extends State<TestWidget> {
   //SpeechRecognitionFunction
   void activateSpeechRecognizer() {//activateっていうより更新処理っていうほうが適切かと
     print('_MyAppState.activateSpeechRecognizer... ');
-    speech = new fspeech.SpeechRecognition();//ここで新しくSpeechRecognition定義してるし、やっぱりerrorの後のはdestroy()でよかったっぽい？
+    speech = new fspeech.SpeechRecognition();//ここで新しくSpeechRecognition定義してるし、やっぱりerrorの後のはdestroy()でよかったっぽい？ <- は？よくねぇよ。そういう甘い考えがバグを招くんだろうが。
     speech.setAvailabilityHandler(onSpeechAvailability);
     speech.setRecognitionStartedHandler(onRecognitionStarted);
     speech.setRecognitionResultHandler(onRecognitionResult);
@@ -229,4 +230,14 @@ class TestState extends State<TestWidget> {
     mSpeech.printInfo("Error Code is ",fspeech.ErrorCode);
   }
 
+  void isNameMatch(){
+    bool matchResult = false;
+    isMach = false;
+    print("isMachの判定を行います。");
+    globals.namedataG.forEach((element) {
+      matchResult = globals.inputText.contains(element);
+      print("認識文字列 : ${globals.inputText}, 比較対象 : $element, 結果 : $matchResult");
+      if(matchResult){isMach = true;}
+    });
+  }
 }
