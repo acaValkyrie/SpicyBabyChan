@@ -25,7 +25,7 @@ class HomeWidget extends StatefulWidget {
 
 class HomeState extends State<HomeWidget> {
 
-  SpeechRecognition speech;
+  fspeech.SpeechRecognition speech;
   bool speechRecognitionAvailable = false;
   mSpeech.Language selectedLang = mSpeech.languages.first;
   bool isMatch = false;
