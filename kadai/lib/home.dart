@@ -1,6 +1,7 @@
 //import 'dart:html';
 import 'package:flutter/material.dart';
 //import 'package:hello_world/routes/globals.dart';
+//import 'package:hello_world/routes/globals.dart';
 import 'routes/globals.dart' as globals;
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'routes/edit_route.dart';
@@ -74,9 +75,9 @@ class HomeState extends State<HomeWidget> {
     continueListen();
 
     if(isMatch){
+      globals.callFunc();
       isMatch = false;
       globals.inputText = "";
-      globals.callFunc();
     }
 
     return Scaffold(
@@ -194,15 +195,23 @@ class HomeState extends State<HomeWidget> {
       globals.inputText2 = "Speech Recognition Available";
       if(globals.isListening){
         //available and listening
-        if(fspeech.ErrorCode != 7) {
-          print("現在音声認識を行っているため飛ばします。");
-          globals.inputText2 += "\nisListening : true";
-          globals.inputText2 += "\nDoing Recognition";
-        }else{
-          print("Error Code 7 により音声認識が停止する可能性があるため、start()関数を実行します。");
-          fspeech.ErrorCode = -1;
-          start();
+        switch(fspeech.ErrorCode){
+          case 6:
+            print("Error Code 6 これで止まんないかな？");
+            globals.isListening = false;
+            activateSpeechRecognizer();
+            break;
+          case 7:
+            print("Error Code 7 により音声認識が停止する可能性があるため、start()関数を実行します。");
+            start();
+            break;
+          default:
+            print("現在音声認識を行っているため飛ばします。");
+            globals.inputText2 += "\nisListening : true";
+            globals.inputText2 += "\nDoing Recognition";
+            break;
         }
+        fspeech.ErrorCode = -1;
         //globals.isListening = false;
       }else{
         //available and not listening
