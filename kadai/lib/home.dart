@@ -25,15 +25,9 @@ class HomeWidget extends StatefulWidget {
 
 class HomeState extends State<HomeWidget> {
 
-<<<<<<< HEAD
   SpeechRecognition speech;
   bool speechRecognitionAvailable = false;
-=======
-
-  fspeech.SpeechRecognition speech;
->>>>>>> 104745e5920b0553f1103d5cffe4fc137c3829a1
   mSpeech.Language selectedLang = mSpeech.languages.first;
-  bool speechRecognitionAvailable = false;
   bool isMatch = false;
   //Color ButtonColor = Colors.red;
 
@@ -75,18 +69,6 @@ class HomeState extends State<HomeWidget> {
   Widget build(BuildContext context) {
 
     setState((){});
-<<<<<<< HEAD
-=======
-    isNameMatch();
-    //ButtonColor = isMatch ? Colors.red : Colors.black;
-    continueListen();
-
-    if(isMatch){
-      isMatch = false;
-      globals.callFunc();
-      globals.inputText = "";
-    }
->>>>>>> 104745e5920b0553f1103d5cffe4fc137c3829a1
 
     return Scaffold(
       body:_pageWidgets.elementAt(_currentIndex),
@@ -231,26 +213,7 @@ class HomeState extends State<HomeWidget> {
       globals.inputText2 = "Speech Recognition NOT Available";
     }
   }
-<<<<<<< HEAD
   
-=======
-
-  void showSpeechInfo(){
-    mSpeech.printInfo("Error Code is ",fspeech.ErrorCode);
-  }
-
-  void isNameMatch(){
-    bool matchResult = false;
-    isMatch = false;
-    print("isMachの判定を行います。");
-    globals.namedataG.forEach((element) {
-      matchResult = globals.inputText.contains(element);
-      print("認識文字列 : ${globals.inputText}, 比較対象 : $element, 結果 : $matchResult");
-      if(matchResult){isMatch = true;}
-    });
-  }
-
->>>>>>> 104745e5920b0553f1103d5cffe4fc137c3829a1
   void _onItemTapped(int index) => setState(() => _currentIndex = index);
 }
 
