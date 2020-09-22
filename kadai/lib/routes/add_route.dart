@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
-import 'package:SpicyBabyChan/home.dart' as homes;
  
 class AddWidget extends StatefulWidget {
   AddWidget({Key key}) : super(key: key);
@@ -14,7 +13,7 @@ class AddState extends State<AddWidget> {
 
   void addName(String inputtext){
     globals.namedataG.add(inputtext);
-    homes.setname();
+    globals.flagG.add(false);
   }
 
   @override
