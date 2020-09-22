@@ -9,7 +9,7 @@ class TestWidget extends StatefulWidget {
 }
 
 class TestState extends State<TestWidget> {
-  fspeech.SpeechRecognition speech;
+  //fspeech.SpeechRecognition speech;
   mSpeech.Language selectedLang = mSpeech.languages.first;
 
   bool speechRecognitionAvailable = false;
@@ -20,23 +20,23 @@ class TestState extends State<TestWidget> {
   @override
   initState() {
     super.initState();
-    activateSpeechRecognizer();
+    //activateSpeechRecognizer();
   }
 
   @override
   Widget build(BuildContext context) {
     print("into Widget build======================================");
-    print("speech = $speech");
+    //print("speech = $speech");
     setState(() {});
     print("exit setstate");
-    isNameMatch();
+    //isNameMatch();
     ButtonColor = isMach ? Colors.red : Colors.black;//isMachの値によってボタンの色を変える
 
     mSpeech.printInfo("isListening", globals.isListening);
     mSpeech.printInfo("speechRecognitionAvailable", speechRecognitionAvailable);
 
     print("連続音声認識が可能かどうかを見ています。==========");
-    continueListen();
+    //continueListen();
     print("音声認識が可能かどうかを見ました。=========");
 
     mSpeech.printInfo("isMach", isMach);
@@ -56,7 +56,6 @@ class TestState extends State<TestWidget> {
         floatingActionButton: FloatingActionButton(
           tooltip: 'Action!',
           child: Icon(Icons.mic),
-          onPressed: showSpeechInfo,
           backgroundColor: ButtonColor,
         ),
 
@@ -102,7 +101,7 @@ class TestState extends State<TestWidget> {
         )
     );
   }
-
+/*
   //SpeechRecognitionFunction
   void activateSpeechRecognizer() {//activateっていうより更新処理っていうほうが適切かと
     print('_MyAppState.activateSpeechRecognizer... ');
@@ -239,5 +238,5 @@ class TestState extends State<TestWidget> {
       print("認識文字列 : ${globals.inputText}, 比較対象 : $element, 結果 : $matchResult");
       if(matchResult){isMach = true;}
     });
-  }
+  }*/
 }
