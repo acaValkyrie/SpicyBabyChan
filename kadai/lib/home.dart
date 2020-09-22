@@ -1,5 +1,6 @@
 //import 'dart:html';
 import 'package:flutter/material.dart';
+//import 'package:hello_world/routes/globals.dart';
 import 'routes/globals.dart' as globals;
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'routes/edit_route.dart';
@@ -26,8 +27,8 @@ class HomeWidget extends StatefulWidget {
 class HomeState extends State<HomeWidget> {
 
   fspeech.SpeechRecognition speech;
-  bool speechRecognitionAvailable = false;
   mSpeech.Language selectedLang = mSpeech.languages.first;
+  bool speechRecognitionAvailable = false;
   bool isMatch = false;
   //Color ButtonColor = Colors.red;
 
@@ -69,6 +70,14 @@ class HomeState extends State<HomeWidget> {
   Widget build(BuildContext context) {
 
     setState((){});
+    isNameMatch();
+    continueListen();
+
+    if(isMatch){
+      isMatch = false;
+      globals.inputText = "";
+      globals.callFunc();
+    }
 
     return Scaffold(
       body:_pageWidgets.elementAt(_currentIndex),
@@ -92,6 +101,7 @@ class HomeState extends State<HomeWidget> {
       ),
     );
   }
+
   //SpeechRecognitionFunction
   void activateSpeechRecognizer() {
     print('_MyAppState.activateSpeechRecognizer... ');
@@ -213,6 +223,21 @@ class HomeState extends State<HomeWidget> {
       globals.inputText2 = "Speech Recognition NOT Available";
     }
   }
+
+  void showSpeechInfo(){
+     mSpeech.printInfo("Error Code is ",fspeech.ErrorCode);
+   }
+
+   void isNameMatch(){
+     bool matchResult = false;
+     isMatch = false;
+     print("isMachの判定を行います。");
+     globals.namedataG.forEach((element) {
+       matchResult = globals.inputText.contains(element);
+       print("認識文字列 : ${globals.inputText}, 比較対象 : $element, 結果 : $matchResult");
+       if(matchResult){isMatch = true;}
+     });
+   }
   
   void _onItemTapped(int index) => setState(() => _currentIndex = index);
 }
