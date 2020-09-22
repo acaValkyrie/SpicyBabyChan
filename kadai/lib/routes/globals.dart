@@ -1,22 +1,19 @@
 library my_prj.globals;
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hello_world/home.dart' as homes;
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:SpicyBabyChan/home.dart' as homes;
+//import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:async';
 import 'dart:convert' show utf8;
 
-
-
-List<String> namedataG = ["千葉","佐藤","田中",];
+List<String> namedataG = [];
 //名前
-List<bool> flagG = [false,false,false,];
-//それぞれの名前をトリガにするか/しないか
 bool backflag = false;//バックグラウンド動作
 bool musicflag = false;//音楽再生
 bool notificationflag = false;//通知
 bool bltflag = false;//通知
 bool callflag = false;
+bool firstflag = true;
+bool firstMusicflag = true;
 //test_route用
 @override
 String inputText = "";
@@ -26,7 +23,7 @@ bool isListening = false;
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPluginG = homes.flutterLocalNotificationsPlugin;
 NotificationDetails platformChannelSpecifics;
-
+/*
   final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
   final String TARGET_DEVICE_NAME = "ESP32 FLUTTER";
@@ -103,19 +100,27 @@ NotificationDetails platformChannelSpecifics;
     List<int> bytes = utf8.encode(data);
     targetCharacteristic.write(bytes);
   }
+  
+*/
+
+void onBluetoothStart(){
+  //startScan();
+}   
+
+void onBluetoothStop(){
+  //disconnectFromDevice();
+  //flutterBlue.stopScan();
+}   
+
 
 void callFunc(){
-  AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer();
-  final audio = Audio("assets/audios/_7thsence.mp3");
 
   if(bltflag){
-    writeData("LEDon");
+    //writeData("LEDon");
   }
-  if(musicflag)
-    _assetsAudioPlayer.open(
-      audio,
-      showNotification: true,
-    );
+  if(musicflag){
+    homes.audio.pause();
+  }
   if(notificationflag) {
     _onNotification();
   }
@@ -140,13 +145,4 @@ Future _onNotification() async {
         platformChannelSpecifics
         );  
   } 
-
-void onBluetoothStart(){
-  startScan();
-}   
-
-void onBluetoothStop(){
-  disconnectFromDevice();
-  flutterBlue.stopScan();
-}   
 

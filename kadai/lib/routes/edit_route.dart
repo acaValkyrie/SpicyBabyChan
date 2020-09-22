@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
+import 'package:SpicyBabyChan/home.dart' as homes;
 
 int index;
 
@@ -17,6 +18,7 @@ class EditState extends State<Edit> {
 
   void changeName(String inputtext){
     globals.namedataG[widget.index] = inputtext;
+    homes.setname();
   }
 
   @override
