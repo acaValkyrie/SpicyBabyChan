@@ -25,23 +25,18 @@ class HomeWidget extends StatefulWidget {
 
 class HomeState extends State<HomeWidget> {
 
-<<<<<<< HEAD
+
   fspeech.SpeechRecognition speech;
   mSpeech.Language selectedLang = mSpeech.languages.first;
   bool speechRecognitionAvailable = false;
   bool isMatch = false;
-
   //Color ButtonColor = Colors.red;
-=======
-  SpeechRecognition speech;
-  mSpeech.Language selectedLang = mSpeech.languages.first;
 
   void roadname() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     globals.namedataG = prefs.getStringList('namelist') ?? [];
     this.setState(() {});
   }
->>>>>>> f093bc644cb6d610b9bb0f1cdbd1129543f298fe
 
   @override
   initState() {
@@ -62,22 +57,6 @@ class HomeState extends State<HomeWidget> {
         initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
-
-  void activateSpeechRecognizer() {
-    print('_MyAppState.activateSpeechRecognizer... ');
-    speech = new SpeechRecognition();
-    speech.setAvailabilityHandler(onSpeechAvailability);
-    speech.setRecognitionStartedHandler(onRecognitionStarted);
-    speech.setRecognitionResultHandler(onRecognitionResult);
-    speech.setRecognitionCompleteHandler(onRecognitionComplete);
-    speech.setErrorHandler(errorHandler);
-    speech.activate(selectedLang.code).then((res) {
-      setState(() => speechRecognitionAvailable = res);
-      print("exit from setState");
-      //globals.isListening = false;
-    });
-    onCurrentLocale('ja_JA');
   }
 
   int _currentIndex = 1;
@@ -123,8 +102,6 @@ class HomeState extends State<HomeWidget> {
       ),
     );
   }
-<<<<<<< HEAD
-
   //SpeechRecognitionFunction
   void activateSpeechRecognizer() {
     print('_MyAppState.activateSpeechRecognizer... ');
@@ -153,39 +130,13 @@ class HomeState extends State<HomeWidget> {
           globals.isListening = result;
           mSpeech.printInfo("now start(). isListening", result);
           print("start()end================");
-=======
-  //SpeechRecognisionFunction
-  void start() =>
-      speech.activate(selectedLang.code).then((_) {
-        return speech.listen().then((result) {
-          print('================== SPEECH RECOGNITION STARTED =================');
-          print('_MyAppState.start => result $result');
-          setState(() {
-            print("on start()\n");
-            globals.isListening = result;
-          });
-          print('=================== SPEECH RECOGNITION ENDED ==================');
->>>>>>> f093bc644cb6d610b9bb0f1cdbd1129543f298fe
         });
       });
     });
   }
 
-  void cancel(){
-    print("cancel()==================");
-    speech.cancel().then((_) => setState(() {
-      globals.isListening = false;
-      print("cancel()end===================");
-    }));
-  }
-
-<<<<<<< HEAD
-  void stop() => speech.stop().then((_) {
-    setState(() => globals.isListening = false);
-  });
-
   //音声認識が利用可能かどうかを引っ張ってきてくれる
-=======
+
   void cancel() =>
       speech.cancel().then((_) => setState((){
         print("on cancel()");
@@ -198,7 +149,6 @@ class HomeState extends State<HomeWidget> {
         setState(() => globals.isListening = false);
       });
 
->>>>>>> f093bc644cb6d610b9bb0f1cdbd1129543f298fe
   void onSpeechAvailability(bool result) {
     print("on onSpeechAvailability()");
     setState(() => speechRecognitionAvailable = result);
@@ -207,7 +157,7 @@ class HomeState extends State<HomeWidget> {
   //別言語が選択された時用だけど今回は言語は日本語だけだから特に用はない。
   void onCurrentLocale(String locale) {
     print('_MyAppState.onCurrentLocale... $locale');
-    setState(() => selectedLang = languages.firstWhere((l) => l.code == locale));
+    setState(() => selectedLang = mSpeech.languages.firstWhere((l) => l.code == locale));
   }
 
   //音声認識開始
