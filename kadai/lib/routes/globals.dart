@@ -141,7 +141,7 @@ Future _onNotification() async {
     await flutterLocalNotificationsPluginG.show(
         0, 
         '通知', 
-        '〇〇さん。呼ばれています。', 
+        '名前を呼ばれています。', 
         platformChannelSpecifics
         );  
   } 
