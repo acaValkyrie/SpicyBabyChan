@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'routes/globals.dart' as globals;
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'routes/edit_route.dart';
-import 'package:flutter_speech/flutter_speech.dart';
+import 'package:flutter_speech/flutter_speech.dart' as fspeech;
 import 'routes/SpeechRecognition.dart' as mSpeech;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -16,13 +16,17 @@ class HomeWidget extends StatefulWidget {
 
 class HomeState extends State<HomeWidget> {
 
-//  SpeechRecognition speech;
-//  mSpeech.Language selectedLang = mSpeech.languages.first;
+  fspeech.SpeechRecognition speech;
+  mSpeech.Language selectedLang = mSpeech.languages.first;
+  bool speechRecognitionAvailable = false;
+  bool isMatch = false;
+
+  //Color ButtonColor = Colors.red;
 
   @override
   initState() {
     super.initState();
-    //activateSpeechRecognizer();
+    activateSpeechRecognizer();
     _notificationSetup();
   }
 
@@ -47,15 +51,15 @@ class HomeState extends State<HomeWidget> {
   Widget build(BuildContext context) {
 
     setState((){});
-    //globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
-    //isMach ? Bcolor = Colors.red : Bcolor = Colors.black;//isMachの値によってボタンの色を変える
+    isNameMatch();
+    //ButtonColor = isMatch ? Colors.red : Colors.black;
+    continueListen();
 
-    //print("isListening:");
-    //print(globals.isListening);
-    //print("speechRecognitionAvailable:");
-    //print(mSpeech.speechRecognitionAvailable);
-
-    //continueListen();
+    if(isMatch){
+      isMatch = false;
+      globals.callFunc();
+      globals.inputText = "";
+    }
 
     return Scaffold(
       body:_pageWidgets.elementAt(_currentIndex),
@@ -75,71 +79,143 @@ class HomeState extends State<HomeWidget> {
       ),
     );
   }
-/*
+
+  //SpeechRecognitionFunction
   void activateSpeechRecognizer() {
     print('_MyAppState.activateSpeechRecognizer... ');
-    speech = new SpeechRecognition();
+    speech = new fspeech.SpeechRecognition();//ここで新しくSpeechRecognition定義してるし、やっぱりerrorの後のはdestroy()でよかったっぽい？ <- は？よくねぇよ。そういう甘い考えがバグを招くんだろうが。
     speech.setAvailabilityHandler(onSpeechAvailability);
     speech.setRecognitionStartedHandler(onRecognitionStarted);
     speech.setRecognitionResultHandler(onRecognitionResult);
     speech.setRecognitionCompleteHandler(onRecognitionComplete);
     speech.setErrorHandler(errorHandler);
+
     speech.activate(selectedLang.code).then((res) {
-      setState(() => mSpeech.speechRecognitionAvailable = res);
+      mSpeech.printInfo("activate()", res);
+      setState(() => speechRecognitionAvailable = res);
     });
   }
-  void start() =>
-      speech.activate(selectedLang.code).then((_) {
-        return speech.listen().then((result) {
-          print('================== SPEECH RECOGNITION STARTED =================');
-          print('_MyAppState.start => result $result');
-          setState(() {
-            globals.isListening = result;
-          });
-          print('=================== SPEECH RECOGNITION ENDED ==================');
+
+  //こいつ実行するとMethodChannel経由で音声認識スタートされる。
+  void start(){
+    print("start()====================");
+    speech.activate(selectedLang.code).then((_) {
+      return speech.listen().then((result) {
+        //print('===================================== SPEECH RECOGNITION STARTED ==========================================');
+        print('_MyAppState.start => result $result');
+        setState(() {
+          //print("on start()\n");
+          globals.isListening = result;
+          mSpeech.printInfo("now start(). isListening", result);
+          print("start()end================");
         });
       });
+    });
+  }
 
-  void onSpeechAvailability(bool result) =>
-      setState(() => mSpeech.speechRecognitionAvailable = result);
+  void cancel(){
+    print("cancel()==================");
+    speech.cancel().then((_) => setState(() {
+      globals.isListening = false;
+      print("cancel()end===================");
+    }));
+  }
 
+  void stop() => speech.stop().then((_) {
+    setState(() => globals.isListening = false);
+  });
+
+  //音声認識が利用可能かどうかを引っ張ってきてくれる
+  void onSpeechAvailability(bool result) {
+    print("on onSpeechAvailability()");
+    setState(() => speechRecognitionAvailable = result);
+  }
+
+  //別言語が選択された時用だけど今回は言語は日本語だけだから特に用はない。
   void onCurrentLocale(String locale) {
     print('_MyAppState.onCurrentLocale... $locale');
     setState(
             () => selectedLang = mSpeech.languages.firstWhere((l) => l.code == locale));
   }
 
+  //音声認識開始
   void onRecognitionStarted() {
+    print("on onRecognitionStarted()");
     setState(() => globals.isListening = true);
   }
 
+  //途中経過
   void onRecognitionResult(String text) {
+    print("on onRecognitionResult");
     print('_MyAppState.onRecognitionResult... $text');
     setState(() => globals.inputText = text);
   }
 
+  //音声認識正常終了
   void onRecognitionComplete(String text) {
+    print("on onRecognitionComplete");
     print('_MyAppState.onRecognitionComplete... $text');
+    //stop();
     setState(() => globals.isListening = false);
   }
 
-  void errorHandler() {
+  //エラー発生。聞き取れなかったり誰も何も言わなかったり。あとはBUSY状態で音声認識しようとするとダメっぽい。
+  void errorHandler(){
+    //cancel();
     activateSpeechRecognizer();
+    //globals.isListening = false;
   }
 
   void continueListen(){
-    if(mSpeech.speechRecognitionAvailable){
+    if(speechRecognitionAvailable){
       globals.inputText2 = "Speech Recognition Available";
       if(globals.isListening){
+        //available and listening
+        if(fspeech.ErrorCode != 7) {
+          print("現在音声認識を行っているため飛ばします。");
+          globals.inputText2 += "\nisListening : true";
+          globals.inputText2 += "\nDoing Recognition";
+        }else{
+          print("Error Code 7 により音声認識が停止する可能性があるため、start()関数を実行します。");
+          fspeech.ErrorCode = -1;
+          start();
+        }
         //globals.isListening = false;
-        globals.inputText2 += "\nisListening : true\n";
       }else{
+        //available and not listening
+        globals.inputText2 += "\nisListening : false";
         globals.inputText2 += "\nStart Recognition";
+        print("連続音声認識を実行します。");
+        //cancel();
         start();
       }
+    }else{
+      mSpeech.printInfo("SpeechRecognition NOT Available", speechRecognitionAvailable);
+      if(globals.isListening){
+        //unavailable and listening
+        print("音声認識が実行不可能なのでisListeningをfalseにします。");
+        globals.isListening = false;
+      }
+      //unavailable and not listening
+      globals.inputText2 = "Speech Recognition NOT Available";
     }
   }
-*/
+
+  void showSpeechInfo(){
+    mSpeech.printInfo("Error Code is ",fspeech.ErrorCode);
+  }
+
+  void isNameMatch(){
+    bool matchResult = false;
+    isMatch = false;
+    print("isMachの判定を行います。");
+    globals.namedataG.forEach((element) {
+      matchResult = globals.inputText.contains(element);
+      print("認識文字列 : ${globals.inputText}, 比較対象 : $element, 結果 : $matchResult");
+      if(matchResult){isMatch = true;}
+    });
+  }
+
   void _onItemTapped(int index) => setState(() => _currentIndex = index);
 }
 

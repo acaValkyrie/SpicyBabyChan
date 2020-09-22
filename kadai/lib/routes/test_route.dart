@@ -20,7 +20,7 @@ class TestState extends State<TestWidget> {
   @override
   initState() {
     super.initState();
-    activateSpeechRecognizer();
+    //activateSpeechRecognizer();
   }
 
   @override
@@ -36,7 +36,7 @@ class TestState extends State<TestWidget> {
     mSpeech.printInfo("speechRecognitionAvailable", speechRecognitionAvailable);
 
     print("連続音声認識が可能かどうかを見ています。==========");
-    continueListen();
+    //continueListen();
     print("音声認識が可能かどうかを見ました。=========");
 
     mSpeech.printInfo("isMach", isMach);
