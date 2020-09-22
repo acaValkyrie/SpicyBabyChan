@@ -26,6 +26,7 @@ class HomeWidget extends StatefulWidget {
 class HomeState extends State<HomeWidget> {
 
   SpeechRecognition speech;
+  bool speechRecognitionAvailable = false;
   mSpeech.Language selectedLang = mSpeech.languages.first;
 
   void roadname() async{
@@ -82,15 +83,6 @@ class HomeState extends State<HomeWidget> {
   Widget build(BuildContext context) {
 
     setState((){});
-    //globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
-    //isMach ? Bcolor = Colors.red : Bcolor = Colors.black;//isMachの値によってボタンの色を変える
-
-    //print("isListening:");
-    //print(globals.isListening);
-    //print("speechRecognitionAvailable:");
-    //print(mSpeech.speechRecognitionAvailable);
-
-    //continueListen();
 
     return Scaffold(
       body:_pageWidgets.elementAt(_currentIndex),
@@ -147,7 +139,7 @@ class HomeState extends State<HomeWidget> {
 
   void onCurrentLocale(String locale) {
     print('_MyAppState.onCurrentLocale... $locale');
-    setState(() => selectedLang = languages.firstWhere((l) => l.code == locale));
+    setState(() => selectedLang = mSpeech.languages.firstWhere((l) => l.code == locale));
   }
 
   void onRecognitionStarted() {
@@ -173,7 +165,7 @@ class HomeState extends State<HomeWidget> {
   }
 
   void continueListen(){
-    if(mSpeech.speechRecognitionAvailable){
+    if(speechRecognitionAvailable){
       globals.inputText2 = "Speech Recognition Available";
       if(globals.isListening){
         //globals.isListening = false;
@@ -184,7 +176,7 @@ class HomeState extends State<HomeWidget> {
       }
     }
   }
-*/
+  
   void _onItemTapped(int index) => setState(() => _currentIndex = index);
 }
 
