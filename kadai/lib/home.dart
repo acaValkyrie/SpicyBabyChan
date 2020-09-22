@@ -4,6 +4,7 @@ import 'routes/globals.dart' as globals;
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'routes/edit_route.dart';
 import 'package:flutter_speech/flutter_speech.dart';
+import 'routes/SpeechRecognition.dart' as mSpeech;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audiofileplayer/audiofileplayer.dart';
@@ -16,15 +17,6 @@ void setname() async{
   prefs.setStringList('namelist',globals.namedataG);
 }
 
-class Language {
-  final String name;
-  final String code;
-
-  const Language(this.name, this.code);
-}
-
-const languages = const [const Language('Japanese', 'ja'),];
-
 class HomeWidget extends StatefulWidget {
   HomeWidget({Key key}) : super(key: key);
   @override
@@ -34,12 +26,7 @@ class HomeWidget extends StatefulWidget {
 class HomeState extends State<HomeWidget> {
 
   SpeechRecognition speech;
-
-  bool speechRecognitionAvailable = false;
-  bool isMach = false;
-  bool isBLT = globals.bltflag;
-
-  Language selectedLang = languages.first;
+  mSpeech.Language selectedLang = mSpeech.languages.first;
 
   void roadname() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -54,7 +41,7 @@ class HomeState extends State<HomeWidget> {
       globals.firstflag = false;
     }
     super.initState();
-    activateSpeechRecognizer();
+    //activateSpeechRecognizer();
     _notificationSetup();
   }
 
@@ -95,25 +82,15 @@ class HomeState extends State<HomeWidget> {
   Widget build(BuildContext context) {
 
     setState((){});
-    globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
+    //globals.namedataG.contains(globals.inputText) ? isMach = true : isMach = false;
     //isMach ? Bcolor = Colors.red : Bcolor = Colors.black;//isMachの値によってボタンの色を変える
 
-    print("isListening:");
-    print(globals.isListening);
-    print("speechRecognitionAvailable:");
-    print(speechRecognitionAvailable);
+    //print("isListening:");
+    //print(globals.isListening);
+    //print("speechRecognitionAvailable:");
+    //print(mSpeech.speechRecognitionAvailable);
 
-    if(speechRecognitionAvailable){
-      globals.inputText2 = "Speech Recognition Available";
-      if(globals.isListening){
-        globals.isListening = false;
-        globals.inputText2 += "\nisListening : false\n";
-      }else{
-        globals.inputText2 += "\nDoing Recognition";
-        start();
-      }
-    }
-
+    //continueListen();
 
     return Scaffold(
       body:_pageWidgets.elementAt(_currentIndex),
@@ -195,6 +172,19 @@ class HomeState extends State<HomeWidget> {
     activateSpeechRecognizer();
   }
 
+  void continueListen(){
+    if(mSpeech.speechRecognitionAvailable){
+      globals.inputText2 = "Speech Recognition Available";
+      if(globals.isListening){
+        //globals.isListening = false;
+        globals.inputText2 += "\nisListening : true\n";
+      }else{
+        globals.inputText2 += "\nStart Recognition";
+        start();
+      }
+    }
+  }
+*/
   void _onItemTapped(int index) => setState(() => _currentIndex = index);
 }
 

@@ -145,4 +145,3 @@ Future _onNotification() async {
         platformChannelSpecifics
         );  
   } 
-
